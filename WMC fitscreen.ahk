@@ -1,11 +1,11 @@
-;;--- Head --- AHK ---
+;;--- Head --- Informations --- AHK ---
 
 ;;	Windows Media Center Fit Screen. Best fit for WMC without full screen. On monitor 1 or 2.
 ;;	Ajusted resolutions: 1366 x 768 1600 x 900  1680 x 1050  1920 x 1080
 ;;	Compatibility: WINDOWS MEDIA CENTER ,  Windows Vista , Windows 7 , Windows 8
 ;;	All files must be in same folder. Where you want.
 ;;	64 bit AHK version : 1.1.24.2 64 bit Unicode
-;;	Version 2017-03-08 2 screen supported.
+;;	Version 2017-03-08 - 2 screen supported.
 
 ;;--- Softwares options ---
 
@@ -22,6 +22,10 @@
 	FileInstall, WMC fitscreen.ini, WMC fitscreen.ini, 0
 	FileInstall, ico_loading.ico, ico_loading.ico, 0
 	FileInstall, ico_running.ico, ico_running.ico, 0
+	FileInstall, ico_reboot.ico, ico_reboot.ico, 0
+	FileInstall, ico_shut.ico, ico_shut.ico, 0
+	FileInstall, ico_wmc.ico, ico_wmc.ico, 0
+	FileInstall, ico_lock.ico, ico_lock.ico, 0
 
 	IniRead, gotomon, WMC fitscreen.ini, options, gotomon
 	IniRead, autorun, WMC fitscreen.ini, options, autorun
@@ -30,29 +34,43 @@
 	IniRead, minimize, WMC fitscreen.ini, options, minimize
 	IniRead, fullscreen, WMC fitscreen.ini, options, fullscreen
 
-;;--- Tray options
-
-	Menu, tray, add, Refresh, doReload			; Reload the script.
-	Menu, tray, add, +-------, secret			; Secret MsgBox
-	Menu, tray, add, About, about1				; Creates a new menu item.
-	Menu, tray, add, Version, version			; About version
-	Menu, tray, add, ++------, about4			; empty space
-	Menu, tray, add, Autorun On/Off, autorunonoff		; autorun
-	Menu, tray, add, Fullscreen On/Off, fullscreenonoff	; autorun
-	Menu, tray, add, +++-----, about2			; empty space
-	Menu, tray, add, WMC Screen Choice, screenselecttray	; select screen menu
-	Menu, tray, add, WMC Close, wmcclose			; Close or Exit WMC, useful when in nochrome mode
-	Menu, tray, add, WMC Full Screen, fullscreen		; Fullscreen
-	Menu, tray, add, +++-----, about3			; empty space
-	Menu, tray, add, Adjust / Start / F7, mousesend		; Run the script.
-
-;;--- Software start here ---
-
 	IfEqual, fullscreen , 1, SetEnv, fullscreenstart, /directmedia:general
 	IfEqual, fullscreen , 0, SetEnv, fullscreenstart,
 
+;;--- Tray options ---
+
+	Menu Tray, NoStandard
+	Menu, tray, add, Exit, GuiClose						; GuiClose
+	Menu Tray, Icon, Exit, ico_shut.ico
+	Menu, tray, add, Refresh, doReload					; Reload the script.
+	Menu Tray, Icon, Refresh, ico_reboot.ico, 1
+	menu, tray, add
+	Menu, tray, add, Secret MsgBox, secret					; Secret MsgBox
+	Menu Tray, Icon, Secret MsgBox, ico_lock.ico, 1
+	Menu, tray, add, About - %Author%, about1				; Creates a new menu item.
+	Menu, tray, add, Hotkey: F7, about5					; Show hotkey
+	Menu Tray, Icon, Hotkey: F7, ico_wmc.ico, 1
+	Menu, tray, add, Version - %version%, version				; About version
+	menu, tray, add
+	;Menu, tray, add, ++------, about4					; empty space
+	Menu, tray, add, Autorun On/Off - %autorun%, autorunonoff		; autorun
+	Menu, tray, add, Fullscreen On/Off - %fullscreen%, fullscreenonoff	; autorun
+	;Menu, tray, add, +++-----, about2					; empty space
+	Menu, tray, add, WMC Screen Choice - %gotomon%, screenselecttray	; select screen menu
+	menu, tray, add
+	Menu, tray, add, WMC Close, wmcclose					; Close or Exit WMC, useful when in nochrome mode
+	Menu Tray, Icon, WMC Close, ico_shut.ico
+	Menu, tray, add, WMC Full Screen, fullscreen				; Fullscreen
+	menu, tray, add
+	;Menu, tray, add, ++++----, about3					; empty space
+	Menu, tray, add, Adjust / Start / F7, mousesend				; Run the script.
+	Menu Tray, Icon, Adjust / Start / F7, ico_wmc.ico, 1
+
+;;--- Software start here ---
+
 	IfWinExist, Windows Media Center,, goto, move
 	goto, start
+
 start:
 	Menu, Tray, Icon, ico_loading.ico
 	IfExist, %windir%\ehome\ehshell.exe				;; check if WMC is installed
@@ -177,27 +195,6 @@ minimize:
 	WinMinimize, Windows Media Center
 	goto, run
 
-screenchoice:
-	SysGet, MonitorCount, MonitorCount
-	SysGet, MonitorPrimary, MonitorPrimary
-	Loop, %MonitorCount%
-	{
-	SysGet, MonitorName, MonitorName, %A_Index%
-	SysGet, Monitor, Monitor, %A_Index%
-	SysGet, MonitorWorkArea, MonitorWorkArea, %A_Index%
-	}
-	select:
-	InputBox, monitorselect , WMC Fitscreen, On witch monitor do you want to adjust WMC ? (2 monitor supported maximum) Actual monitor=%gotomon%`n`nMonitor Count:`t%MonitorCount%`nPrimary Monitor:`t%MonitorPrimary%
-	IfGreater, monitorselect, %MonitorCount%, goto, select
-	if ErrorLevel
-		goto, run
-	IfEqual, monitorselect, 0, Goto, Select
-	IniWrite, %monitorselect%, WMC fitscreen.ini, options, gotomon
-	IfEqual, monitorselect, 1, SetEnv, gotomon, 1
-	IfEqual, monitorselect, 2, SetEnv, gotomon, 2
-	;; MsgBox, Error_05 Monitor assigned correctly..
-	goto, run
-
 ;;--- Quit (escape , esc) ---
 
 GuiClose:
@@ -225,7 +222,27 @@ secret:
 	Return
 
 screenselecttray:
-	Goto, screenchoice
+	Menu, Tray, Icon, ico_loading.ico
+	SysGet, MonitorCount, MonitorCount
+	SysGet, MonitorPrimary, MonitorPrimary
+	Loop, %MonitorCount%
+	{
+		SysGet, MonitorName, MonitorName, %A_Index%
+		SysGet, Monitor, Monitor, %A_Index%
+		SysGet, MonitorWorkArea, MonitorWorkArea, %A_Index%
+	}
+	select:
+	InputBox, monitorselect , WMC Fitscreen, On witch monitor do you want to adjust WMC ? (2 monitor supported maximum) Actual monitor=%gotomon%`n`nMonitor Count:`t%MonitorCount%`nPrimary Monitor:`t%MonitorPrimary%
+	IfGreater, monitorselect, %MonitorCount%, goto, select
+		if ErrorLevel, goto, run
+	IfEqual, monitorselect, 0, Goto, Select
+	IniWrite, %monitorselect%, WMC fitscreen.ini, options, gotomon
+	IfEqual, monitorselect, 1, SetEnv, gotomon, 1
+	IfEqual, monitorselect, 2, SetEnv, gotomon, 2
+	IfEqual, gotomon, 1, Menu, Tray, Rename, WMC Screen Choice - 2, WMC Screen Choice - 1
+	IfEqual, gotomon, 2, Menu, Tray, Rename, WMC Screen Choice - 1, WMC Screen Choice - 2
+	Menu, Tray, Icon, ico_running.ico
+	goto, run
 
 fullscreenonoff:
 	Menu, Tray, Icon, ico_loading.ico
@@ -234,18 +251,18 @@ fullscreenonoff:
 	msgbox, error_04 fullscreen error fullscreen=%fullscreen%
 	Menu, Tray, Icon, ico_running.ico
 	Return
-
 	enablefullscreen:
 	IniWrite, 1, WMC fitscreen.ini, options, fullscreen
 	SetEnv, fullscreen, 1
 	TrayTip, %title%, fullscreen enabled - %fullscreen%, 2, 2
+	Menu, Tray, Rename, Fullscreen On/Off - 0, Fullscreen On/Off - 1
 	Menu, Tray, Icon, ico_running.ico
 	Return
-
 	disablefullscreen:
 	IniWrite, 0, WMC fitscreen.ini, options, fullscreen
 	SetEnv, fullscreen, 0
 	TrayTip, %title%, fullscreen disabled - %fullscreen%, 2, 2
+	Menu, Tray, Rename, Fullscreen On/Off - 1, Fullscreen On/Off - 0
 	Menu, Tray, Icon, ico_running.ico
 	Return
 
@@ -256,18 +273,18 @@ autorunonoff:
 	msgbox, error_03 sound error
 	Menu, Tray, Icon, ico_running.ico
 	Return
-
 	enableautorun:
 	IniWrite, 1, WMC fitscreen.ini, options, autorun
 	SetEnv, autorun, 1
 	TrayTip, %title%, Autorun enabled - %autorun%, 2, 2
+	Menu, Tray, Rename, Autorun On/Off - 0, Autorun On/Off - 1
 	Menu, Tray, Icon, ico_running.ico
 	Return
-
 	disableautorun:
 	IniWrite, 0, WMC fitscreen.ini, options, autorun
 	SetEnv, autorun, 0
 	TrayTip, %title%, Autorun disabled - %autorun%, 2, 2
+	Menu, Tray, Rename, Autorun On/Off - 1, Autorun On/Off - 0
 	Menu, Tray, Icon, ico_running.ico
 	Return
 
@@ -288,6 +305,7 @@ about1:
 about2:
 about3:
 about4:
+about5:
 	Menu, Tray, Icon, ico_loading.ico
 	TrayTip, %title%, %mode% by %author%, 2, 1
 	Menu, Tray, Icon, ico_running.ico
@@ -301,6 +319,7 @@ version:
 
 doReload:
 	Menu, Tray, Icon, ico_loading.ico
+	sleep, 500
 	Reload
 	Menu, Tray, Icon, ico_running.ico
 	Return
