@@ -2,7 +2,7 @@
 
 ;;	Windows Media Center Fit Screen. Best fit for WMC without full screen. On monitor 1 or 2.
 ;;	Ajusted resolutions: 1366 x 768 1600 x 900  1680 x 1050  1920 x 1080
-;;	Compatibility: WINDOWS MEDIA CENTER ,  Windows Vista , Windows 7 , Windows 8
+;;	Compatibility: WINDOWS MEDIA CENTER ,  Windows Xp , Windows Vista , Windows 7 , Windows 8
 ;;	All files must be in same folder. Where you want.
 ;;	64 bit AHK version : 1.1.24.2 64 bit Unicode
 ;;	Version 2017-03-08 - 2 screen supported.
@@ -16,7 +16,7 @@
 
 	SetEnv, title, WMC FitScreen
 	SetEnv, mode, Fit Screen : HotKey F7
-	SetEnv, version, Version 2017-03-10
+	SetEnv, version, Version 2017-03-11
 	SetEnv, Author, LostByteSoft
 
 	FileInstall, WMC fitscreen.ini, WMC fitscreen.ini, 0
@@ -29,6 +29,9 @@
 	FileInstall, ico_about.ico, ico_about.ico, 0
 	FileInstall, ico_full.ico, ico_full.ico, 0
 	FileInstall, ico_monitor.ico, ico_monitor.ico, 0
+	FileInstall, ico_green.ico, ico_green.ico, 0
+	FileInstall, ico_minimize.ico, ico_minimize.ico, 0
+	FileInstall, ico_maximize.ico, ico_maximize.ico, 0
 
 	IniRead, gotomon, WMC fitscreen.ini, options, gotomon
 	IniRead, autorun, WMC fitscreen.ini, options, autorun
@@ -47,15 +50,16 @@
 	Menu, Tray, NoStandard
 	Menu, tray, add, Hotkey: F7, mousesend					; Show hotkey
 	Menu, Tray, Icon, Hotkey: F7, ico_wmc.ico, 1
+	Menu, tray, add, Open WMC fitscreen.ini, openini
 	menu, tray, add
-	Menu, tray, add, Exit, GuiClose						; GuiClose exit program
-	Menu, Tray, Icon, Exit, ico_shut.ico
+	Menu, tray, add, Exit FitScreen, GuiClose2				; GuiClose exit program
+	Menu, Tray, Icon, Exit FitScreen, ico_shut.ico
 	Menu, tray, add, Refresh, doReload					; Reload the script.
 	Menu, Tray, Icon, Refresh, ico_reboot.ico, 1
 	menu, tray, add
 	Menu, tray, add, Secret MsgBox, secret					; Secret MsgBox
 	Menu, Tray, Icon, Secret MsgBox, ico_lock.ico, 1
-	Menu, tray, add, About - LostByteSoft, about1				; Creates a new menu item.
+	Menu, tray, add, About - LostByteSoft, about				; Creates a new menu item.
 	Menu, Tray, Icon, About - LostByteSoft, ico_about.ico, 1
 	Menu, tray, add, Version , version					; About version
 	Menu, Tray, Icon, Version, ico_about.ico, 1
@@ -64,20 +68,24 @@
 	Menu, tray, add, Fullscreen On/Off = %fullscreen%, fullscreenonoff	; autorun
  	Menu, tray, add, Screen Choice = %gotomon%, screenselecttray		; select screen menu
 	Menu, Tray, Icon, Screen Choice = %gotomon%, ico_monitor.ico, 1
-	Menu, TwoTree, Add, Monitor 1, ButtonScreen_1
-	Menu, TwoTree, Icon, Monitor 1, ico_monitor.ico
-	Menu, TwoTree, Add, Monitor 2, ButtonScreen_2
-	Menu, TwoTree, Icon, Monitor 2, ico_monitor.ico
+	Menu, TwoTree, Add, Monitor 1 and move, ButtonScreen_1
+	Menu, TwoTree, Icon, Monitor 1 and move, ico_monitor.ico
+	Menu, TwoTree, Add, Monitor 2 and move, ButtonScreen_2
+	Menu, TwoTree, Icon, Monitor 2 and move, ico_monitor.ico
 	Menu, Tray, Add, Click select monitor, :TwoTree
 	menu, tray, add
-	Menu, tray, add, WMC Close, wmcclose					; Close or Exit WMC, useful when in nochrome mode
-	Menu, Tray, Icon, WMC Close, ico_shut.ico
+	Menu, tray, add, WMC Exit / Close, wmcclose				; Close or Exit WMC, useful when in nochrome mode
+	Menu, Tray, Icon, WMC Exit / Close, ico_shut.ico
 	Menu, tray, add, WMC Full Screen, fullscreen				; Fullscreen
 	Menu, Tray, Icon, WMC Full Screen, ico_full.ico, 1
+	Menu, tray, add, WMC Minimize, minimize					; minimize
+	Menu, Tray, Icon, WMC minimize, ico_minimize.ico, 1
+	Menu, tray, add, WMC Maximize, Maximize					; Maximize
+	Menu, Tray, Icon, WMC Maximize, ico_Maximize.ico, 1
 	menu, tray, add
-	Menu, tray, add, Adjust / Start / F7, mousesend				; Run the script.
-	Menu, Tray, Icon, Adjust / Start / F7, ico_wmc.ico, 1
-	Menu, Tray, Tip, WindowsMediaCenter FitScreen
+	Menu, tray, add, Start / Adjust / F7, mousesend				; Run the script.
+	Menu, Tray, Icon, Start / Adjust / F7, ico_wmc.ico, 1
+	Menu, Tray, Tip, Windows Media Center FitScreen
 
 ;;--- Software start here ---
 
@@ -105,7 +113,7 @@ start:
 	else
 		{	Menu, Tray, Icon, ico_running.ico
 			MsgBox, WMC not installed.
-			goto, GuiClose
+			goto, GuiClose2
 		}
 
 run:
@@ -115,6 +123,7 @@ run:
 	IfWinExist, Windows Media Center,, goto, move
 	run, "%windir%\ehome\ehshell.exe" %start% %fullscreenstart%
 	sleep, 500
+	Menu, Tray, Icon, ico_green.ico
 	WinWait, Windows Media Center
 	sleep, 500
 	WinActivate, Windows Media Center
@@ -139,6 +148,7 @@ move:
 	WinActivate, Windows Media Center
 	Goto, Run
 	mon2-768:
+	Menu, Tray, Icon, ico_green.ico
 	SysGet, Mon2, Monitor, 2
 	IfEqual, Mon2Bottom , 900, goto, mon2-900
 	IfEqual, Mon2Bottom , 1050, goto, mon2-1050
@@ -154,6 +164,7 @@ move:
 	WinActivate, Windows Media Center
 	Goto, Run
 	mon2-900:
+	Menu, Tray, Icon, ico_green.ico
 	SysGet, Mon2, Monitor, 2
 	IfEqual, Mon2Bottom , 768, goto, mon2-768
 	IfEqual, Mon2Bottom , 1050, goto, mon2-1050
@@ -169,6 +180,7 @@ move:
 	WinActivate, Windows Media Center
 	Goto, Run
 	mon2-1050:
+	Menu, Tray, Icon, ico_green.ico
 	SysGet, Mon2, Monitor, 2
 	IfEqual, Mon2Bottom , 768, goto, mon2-768
 	IfEqual, Mon2Bottom , 900, goto, mon2-900
@@ -184,6 +196,7 @@ move:
 	WinActivate, Windows Media Center
 	Goto, Run
 	mon2-1080:
+	Menu, Tray, Icon, ico_green.ico
 	SysGet, Mon2, Monitor, 2
 	IfEqual, Mon2Bottom , 768, goto, mon2-768
 	IfEqual, Mon2Bottom , 900, goto, mon2-900
@@ -207,49 +220,25 @@ Default:	;; Not the best fit. Screen 1 only.
 	WinActivate, Windows Media Center
 	Goto, Run
 
-minimize:
-	WinMinimize, Windows Media Center
-	goto, run
+;--- Gui 2 start ---
+	screenselecttray:
+		Menu, Tray, Icon, ico_green.ico
+		IfEqual, MonitorCount, 1, Goto, onlyonemonitor
+		setenv oldvalue, %gotomon%
 
-;;--- Quit (escape , esc) ---
-
-GuiClose:
-	ExitApp
-
-;;--- Tray Bar (must be at end of file) ---
-
-secret:
-	Menu, Tray, Icon, ico_loading.ico
-	IniRead, gotomon, WMC fitscreen.ini, options, gotomon
-	IniRead, autorun, WMC fitscreen.ini, options, autorun
-	IniRead, timer, WMC fitscreen.ini, options, timer
-	IniRead, start, WMC fitscreen.ini, options, start
-	IniRead, minimize, WMC fitscreen.ini, options, minimize
-	IniRead, fullscreen, WMC fitscreen.ini, options, fullscreen
-	;;IfEqual, fullscreen , 1, SetEnv, fullscreenstart, /directmedia:general
-	IfEqual, fullscreen , 0, SetEnv, fullscreenstart, (disabled)
-	MsgBox, title=%title% mode=%mode% version=%version% author=%author%`n`nt_UpTime=%t_UpTime% Hotkey=F7 A_WorkingDir=%A_WorkingDir%`n`nfullscreen=%fullscreen% start=%start% autorun=%autorun% timer=%timer% minimize=%minimize%`n`ngotomon=%gotomon% fullscreenstart=%fullscreenstart%`n`nresolution1=%Mon1Bottom% resolution2=%Mon2Bottom%
-	IniRead, fullscreen, WMC fitscreen.ini, options, fullscreen
-	;;IfEqual, fullscreen , 1, SetEnv, fullscreenstart, /directmedia:general
-	IfEqual, fullscreen , 0, SetEnv, fullscreenstart,
-	Menu, Tray, Icon, ico_running.ico
-	Return
-
-screenselecttray:
-	;--- Gui 2 start ---
-	Menu, Tray, Icon, ico_loading.ico
-	IfEqual, MonitorCount, 1, Goto, onlyonemonitor
-	setenv oldvalue, %gotomon%
 	screenselectgui2:
 		Gui, Add, Edit, x5 y108 w358 h24 vEditgui2, %gotomon%
 		Gui, Add, Button, x68 y137 w54 h24 , OK
 		Gui, Add, Button, x247 y137 w54 h24 , Cancel
-		Gui, Add, Text, x5 y5 w358 h98 , On witch monitor do you want to adjust WMC ? (2 monitor supported maximum)`nActual monitor:`t%gotomon%`nMonitor Count:`t%MonitorCount%`nPrimary Monitor:`t%MonitorPrimary%
+		Gui, Add, Text, x5 y5 w358 h98 , On witch monitor do you want to adjust WMC ?`n`t(2 monitor supported maximum)`nActual monitor:`t%gotomon%`nMonitor Count:`t%MonitorCount%`nPrimary Monitor:`t%MonitorPrimary%
 		Gui, Add, Button, x52 y210 w100 h30 , Screen_1
 		Gui, Add, Button, x222 y210 w100 h30 , Screen_2
-		Gui, Add, Text, x22 y170 w330 h15 , Click on monitor you want WMC and move it immediately.
+		Gui, Add, Text, x28 y180 w330 h15 , Click on monitor you want WMC and move it immediately.
 		Gui, Show, x1095 y420 h247 w372, %title%
 		Return
+
+	GuiClose:
+		goto, ButtonCancel
 
 	ButtonCancel:
 		Gui, destroy
@@ -286,10 +275,50 @@ screenselecttray:
 		goto, ButtonCancel
 
 	onlyonemonitor:
-		MsgBox, You only have one monitor. You could not change this setting.
+		Menu, Tray, Icon, ico_about.ico
+		MsgBox, 0, WMC FitScreen, You only have one monitor. You could not change this setting.
 		Goto, run
 
 ;--- Gui 2 end ---
+
+minimize:
+	Menu, Tray, Icon, ico_green.ico
+	WinMinimize, Windows Media Center
+	goto, run
+
+maximize:
+	Menu, Tray, Icon, ico_green.ico
+	Winmaximize, Windows Media Center
+	goto, run
+
+openini:
+	Menu, Tray, Icon, ico_green.ico
+	run, notepad.exe "WMC fitscreen.ini"
+	goto, run
+
+;;--- Quit (escape , esc) ---
+
+GuiClose2:
+	ExitApp
+
+;;--- Tray Bar (must be at end of file) ---
+
+secret:
+	Menu, Tray, Icon, ico_loading.ico
+	IniRead, gotomon, WMC fitscreen.ini, options, gotomon
+	IniRead, autorun, WMC fitscreen.ini, options, autorun
+	IniRead, timer, WMC fitscreen.ini, options, timer
+	IniRead, start, WMC fitscreen.ini, options, start
+	IniRead, minimize, WMC fitscreen.ini, options, minimize
+	IniRead, fullscreen, WMC fitscreen.ini, options, fullscreen
+	;;IfEqual, fullscreen , 1, SetEnv, fullscreenstart, /directmedia:general
+	IfEqual, fullscreen , 0, SetEnv, fullscreenstart, (disabled)
+	MsgBox, title=%title% mode=%mode% version=%version% author=%author%`n`nt_UpTime=%t_UpTime% Hotkey=F7 A_WorkingDir=%A_WorkingDir%`n`nfullscreen=%fullscreen% start=%start% autorun=%autorun% timer=%timer% minimize=%minimize%`n`ngotomon=%gotomon% fullscreenstart=%fullscreenstart%`n`nresolution1=%Mon1Bottom% resolution2=%Mon2Bottom%
+	IniRead, fullscreen, WMC fitscreen.ini, options, fullscreen
+	;;IfEqual, fullscreen , 1, SetEnv, fullscreenstart, /directmedia:general
+	IfEqual, fullscreen , 0, SetEnv, fullscreenstart,
+	Menu, Tray, Icon, ico_running.ico
+	Return
 
 fullscreenonoff:
 	Menu, Tray, Icon, ico_loading.ico
@@ -298,18 +327,22 @@ fullscreenonoff:
 	msgbox, error_04 fullscreen error fullscreen=%fullscreen%
 	Menu, Tray, Icon, ico_running.ico
 	Return
+
 	enablefullscreen:
+	Menu, Tray, Icon, ico_green.ico
 	IniWrite, 1, WMC fitscreen.ini, options, fullscreen
 	SetEnv, fullscreen, 1
 	TrayTip, %title%, fullscreen enabled - %fullscreen%, 2, 2
-	Menu, Tray, Rename, Fullscreen On/Off - 0, Fullscreen On/Off - 1
+	Menu, Tray, Rename, Fullscreen On/Off = 0, Fullscreen On/Off = 1
 	Menu, Tray, Icon, ico_running.ico
 	Return
+
 	disablefullscreen:
+	Menu, Tray, Icon, ico_green.ico
 	IniWrite, 0, WMC fitscreen.ini, options, fullscreen
 	SetEnv, fullscreen, 0
 	TrayTip, %title%, fullscreen disabled - %fullscreen%, 2, 2
-	Menu, Tray, Rename, Fullscreen On/Off - 1, Fullscreen On/Off - 0
+	Menu, Tray, Rename, Fullscreen On/Off = 1, Fullscreen On/Off = 0
 	Menu, Tray, Icon, ico_running.ico
 	Return
 
@@ -320,18 +353,20 @@ autorunonoff:
 	msgbox, error_03 sound error
 	Menu, Tray, Icon, ico_running.ico
 	Return
+
 	enableautorun:
 	IniWrite, 1, WMC fitscreen.ini, options, autorun
 	SetEnv, autorun, 1
 	TrayTip, %title%, Autorun enabled - %autorun%, 2, 2
-	Menu, Tray, Rename, Autorun On/Off - 0, Autorun On/Off - 1
+	Menu, Tray, Rename, Autorun On/Off = 0, Autorun On/Off - 1
 	Menu, Tray, Icon, ico_running.ico
 	Return
+
 	disableautorun:
 	IniWrite, 0, WMC fitscreen.ini, options, autorun
 	SetEnv, autorun, 0
 	TrayTip, %title%, Autorun disabled - %autorun%, 2, 2
-	Menu, Tray, Rename, Autorun On/Off - 1, Autorun On/Off - 0
+	Menu, Tray, Rename, Autorun On/Off = 1, Autorun On/Off - 0
 	Menu, Tray, Icon, ico_running.ico
 	Return
 
@@ -348,12 +383,7 @@ wmcclose:
 	WinClose, Windows Media Center
 	goto, run
 
-about1:
-about2:
-about3:
-about4:
-about5:
-about6:
+about:
 	Menu, Tray, Icon, ico_loading.ico
 	TrayTip, %title%, %mode% by %author%, 2, 1
 	Menu, Tray, Icon, ico_running.ico
@@ -395,6 +425,8 @@ fullscreen:
 ;
 ;              You just DO WHAT THE FUCK YOU WANT TO.
 ;
+;		     NO FUCKING WARRANTY AT ALL
+;
 ;	As is customary and in compliance with current global and
 ;	interplanetary regulations, the author of these pages disclaims
 ;	all liability for the consequences of the advice given here,
@@ -402,8 +434,10 @@ fullscreen:
 ;	the material, Loss of rights to the manufacturer's warranty,
 ;	electrocution, drowning, divorce, civil war, the effects of
 ;	radiation due to atomic fission, unexpected tax recalls or
-;		encounters with beings 'elsewhere.
+;	    encounters with extraterrestrial beings 'elsewhere.
 ;
 ;              LostByteSoft no copyright or copyleft.
+;
+;	If you are unhappy with this software i do not care.
 ;
 ;;--- End of file ---
