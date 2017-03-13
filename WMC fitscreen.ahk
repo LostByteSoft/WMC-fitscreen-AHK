@@ -16,7 +16,7 @@
 
 	SetEnv, title, WMC FitScreen
 	SetEnv, mode, Fit Screen : HotKey F7
-	SetEnv, version, Version 2017-03-11
+	SetEnv, version, Version 2017-03-13
 	SetEnv, Author, LostByteSoft
 
 	FileInstall, WMC fitscreen.ini, WMC fitscreen.ini, 0
@@ -48,9 +48,13 @@
 ;;--- Menu Tray options ---
 
 	Menu, Tray, NoStandard
-	Menu, tray, add, Hotkey: F7, mousesend					; Show hotkey
-	Menu, Tray, Icon, Hotkey: F7, ico_wmc.ico, 1
-	Menu, tray, add, Open WMC fitscreen.ini, openini
+	Menu, tray, add, --= WMC FitScreen =--, about
+	Menu, tray, Disable, --= WMC FitScreen =--
+	Menu, tray, add, Hotkey: F7 (Move), mousesend
+	Menu, tray, Disable, Hotkey: F7 (Move)
+	;;Menu, Tray, Icon, Hotkey: F7, ico_wmc.ico, 1
+	Menu, tray, add, Hotkey: F8 (Mute), about
+	Menu, tray, Disable, Hotkey: F8 (Mute)
 	menu, tray, add
 	Menu, tray, add, Exit FitScreen, GuiClose2				; GuiClose exit program
 	Menu, Tray, Icon, Exit FitScreen, ico_shut.ico
@@ -61,11 +65,18 @@
 	Menu, Tray, Icon, Secret MsgBox, ico_lock.ico, 1
 	Menu, tray, add, About - LostByteSoft, about				; Creates a new menu item.
 	Menu, Tray, Icon, About - LostByteSoft, ico_about.ico, 1
-	Menu, tray, add, Version , version					; About version
-	Menu, Tray, Icon, Version, ico_about.ico, 1
+	Menu, tray, add, %Version% , version					; About version
+	Menu, Tray, Icon, %Version%, ico_about.ico, 1
 	menu, tray, add
+	menu, tray, add, --- Options ---, about
+	Menu, tray, Disable, --- Options ---
+	menu, tray, add, Timer = %timer%, about
+	Menu, tray, Disable, Timer = %timer%
+	Menu, tray, add, Open WMC fitscreen.ini, openini
 	Menu, tray, add, Autorun On/Off = %autorun%, autorunonoff		; autorun
 	Menu, tray, add, Fullscreen On/Off = %fullscreen%, fullscreenonoff	; autorun
+	menu, tray, add, --= Monitor Select =--, about
+	Menu, tray, Disable, --= Monitor Select =--
  	Menu, tray, add, Screen Choice = %gotomon%, screenselecttray		; select screen menu
 	Menu, Tray, Icon, Screen Choice = %gotomon%, ico_monitor.ico, 1
 	Menu, TwoTree, Add, Monitor 1 and move, ButtonScreen_1
@@ -92,6 +103,9 @@
 	IfEqual, MonitorCount, 1, SetEnv, gotomon, 1
 	IfEqual, fullscreen , 1, SetEnv, fullscreenstart, /directmedia:general
 	IfEqual, fullscreen , 0, SetEnv, fullscreenstart,
+	IfEqual, gotomon, 1, Menu, TwoTree, Disable, Monitor 1 and move
+	IfEqual, gotomon, 2, Menu, TwoTree, Disable, Monitor 2 and move
+	IfEqual, MonitorCount, 1, Menu, TwoTree, Disable, Monitor 2 and move
 	IfWinExist, Windows Media Center,, goto, move
 	goto, start
 
@@ -256,6 +270,10 @@ Default:	;; Not the best fit. Screen 1 only.
 		IfEqual, Editgui2, 2, SetEnv, gotomon, 2
 		IfEqual, Editgui2, 1, Menu, Tray, Rename, Screen Choice = 2, Screen Choice = 1
 		IfEqual, Editgui2, 2, Menu, Tray, Rename, Screen Choice = 1, Screen Choice = 2
+		IfEqual, gotomon, 1, Menu, TwoTree, Enable, Monitor 2 and move
+		IfEqual, gotomon, 2, Menu, TwoTree, Enable, Monitor 1 and move
+		Menu, TwoTree, Disable, Monitor 2 and move
+
 		goto, ButtonCancel
 
 	ButtonScreen_1:
@@ -264,6 +282,8 @@ Default:	;; Not the best fit. Screen 1 only.
 		IniWrite, 1, WMC fitscreen.ini, options, gotomon
 		SetEnv, gotomon, 1
 		Menu, Tray, Rename, Screen Choice = 2, Screen Choice = 1
+		Menu, TwoTree, Enable, Monitor 2 and move
+		Menu, TwoTree, Disable, Monitor 1 and move
 		goto, ButtonCancel
 
 	ButtonScreen_2:
@@ -272,6 +292,8 @@ Default:	;; Not the best fit. Screen 1 only.
 		IniWrite, 2, WMC fitscreen.ini, options, gotomon
 		SetEnv, gotomon, 2
 		Menu, Tray, Rename, Screen Choice = 1, Screen Choice = 2
+		Menu, TwoTree, Enable, Monitor 1 and move
+		Menu, TwoTree, Disable, Monitor 2 and move
 		goto, ButtonCancel
 
 	onlyonemonitor:
@@ -284,16 +306,19 @@ Default:	;; Not the best fit. Screen 1 only.
 minimize:
 	Menu, Tray, Icon, ico_green.ico
 	WinMinimize, Windows Media Center
+	Sleep, 1000
 	goto, run
 
 maximize:
 	Menu, Tray, Icon, ico_green.ico
 	Winmaximize, Windows Media Center
+	Sleep, 1000
 	goto, run
 
 openini:
 	Menu, Tray, Icon, ico_green.ico
 	run, notepad.exe "WMC fitscreen.ini"
+	Sleep, 1000
 	goto, run
 
 ;;--- Quit (escape , esc) ---
@@ -386,12 +411,14 @@ wmcclose:
 about:
 	Menu, Tray, Icon, ico_loading.ico
 	TrayTip, %title%, %mode% by %author%, 2, 1
+	Sleep, 500
 	Menu, Tray, Icon, ico_running.ico
 	Return
 
 version:
 	Menu, Tray, Icon, ico_loading.ico
 	TrayTip, %title%, %version%, 2, 2
+	Sleep, 500
 	Menu, Tray, Icon, ico_running.ico
 	Return
 
