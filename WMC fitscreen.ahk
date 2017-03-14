@@ -6,6 +6,15 @@
 ;;	All files must be in same folder. Where you want.
 ;;	64 bit AHK version : 1.1.24.2 64 bit Unicode
 ;;	Version 2017-03-08 - 2 screen supported.
+;;	; mean functionnal but disabled and mayby work on it
+;;	;; mean unfunctionnal and be never it
+
+;;--- Softwares Variables ---
+
+	SetEnv, title, WMC FitScreen
+	SetEnv, mode, Fit Screen : HotKey F7
+	SetEnv, version, Version 2017-03-14
+	SetEnv, Author, LostByteSoft
 
 ;;--- Softwares options ---
 
@@ -13,11 +22,6 @@
 	#SingleInstance Force
 	#Persistent
 	t_UpTime := A_TickCount // 1000			; Elapsed seconds since start if uptime upper (Var timer specified in WMC fitscreen.ini) sec start imediately
-
-	SetEnv, title, WMC FitScreen
-	SetEnv, mode, Fit Screen : HotKey F7
-	SetEnv, version, Version 2017-03-13
-	SetEnv, Author, LostByteSoft
 
 	FileInstall, WMC fitscreen.ini, WMC fitscreen.ini, 0
 	FileInstall, ico_loading.ico, ico_loading.ico, 0
@@ -32,6 +36,7 @@
 	FileInstall, ico_green.ico, ico_green.ico, 0
 	FileInstall, ico_minimize.ico, ico_minimize.ico, 0
 	FileInstall, ico_maximize.ico, ico_maximize.ico, 0
+	FileInstall, ico_mute.ico, ico_mute.ico, 0
 
 	IniRead, gotomon, WMC fitscreen.ini, options, gotomon
 	IniRead, autorun, WMC fitscreen.ini, options, autorun
@@ -49,12 +54,28 @@
 
 	Menu, Tray, NoStandard
 	Menu, tray, add, --= WMC FitScreen =--, about
-	Menu, tray, Disable, --= WMC FitScreen =--
+	Menu, Tray, Icon, --= WMC FitScreen =--, ico_running.ico, 1
+	;Menu, tray, Disable, --= WMC FitScreen =--
 	Menu, tray, add, Hotkey: F7 (Move), mousesend
-	Menu, tray, Disable, Hotkey: F7 (Move)
-	;;Menu, Tray, Icon, Hotkey: F7, ico_wmc.ico, 1
-	Menu, tray, add, Hotkey: F8 (Mute), about
-	Menu, tray, Disable, Hotkey: F8 (Mute)
+	;Menu, tray, Disable, Hotkey: F7 (Move)
+	Menu, Tray, Icon, Hotkey: F7 (Move), ico_wmc.ico, 1
+	Menu, tray, add, Hotkey: F8 (Mute), mute
+	Menu, Tray, Icon, Hotkey: F8 (Mute), ico_mute.ico, 1
+	;Menu, tray, Disable, Hotkey: F8 (Mute)
+	Menu, ThreeTree, Add, --= Hotkey list =--, about
+	Menu, ThreeTree, Disable, --= Hotkey list =--
+	Menu, ThreeTree, Add, F7 move, about
+	Menu, ThreeTree, Add, F8 mute, about
+	Menu, ThreeTree, Add, F8 mute, about
+	Menu, ThreeTree, Add, Ctrl+U = Change DVD subtitles, about
+	Menu, ThreeTree, Add, Ctrl+T = Go to Live TV, about
+	Menu, ThreeTree, Add, Ctrl+R = Record a TV show, about
+	Menu, ThreeTree, Add, F9/F10 = Volume Up/Volume Down, about
+	Menu, ThreeTree, Add, Ctrl+M = Go to music, about
+	Menu, ThreeTree, Add, Ctrl+I = Go to Pictures, about
+	Menu, ThreeTree, Add, Ctrl+E = Go to Videos, about
+	Menu, ThreeTree, Add, Icon Clicker, clickico
+	Menu, Tray, Add, ---= Hotkey list =--, :ThreeTree
 	menu, tray, add
 	Menu, tray, add, Exit FitScreen, GuiClose2				; GuiClose exit program
 	Menu, Tray, Icon, Exit FitScreen, ico_shut.ico
@@ -68,13 +89,14 @@
 	Menu, tray, add, %Version% , version					; About version
 	Menu, Tray, Icon, %Version%, ico_about.ico, 1
 	menu, tray, add
-	menu, tray, add, --- Options ---, about
-	Menu, tray, Disable, --- Options ---
-	menu, tray, add, Timer = %timer%, about
-	Menu, tray, Disable, Timer = %timer%
+	menu, tray, add, --= Options =--, about
+	Menu, tray, Disable, --= Options =--
 	Menu, tray, add, Open WMC fitscreen.ini, openini
 	Menu, tray, add, Autorun On/Off = %autorun%, autorunonoff		; autorun
 	Menu, tray, add, Fullscreen On/Off = %fullscreen%, fullscreenonoff	; autorun
+	menu, tray, add, Start Timer = %timer%, timerset
+	;Menu, tray, Disable, Start Timer = %timer%
+	menu, tray, add
 	menu, tray, add, --= Monitor Select =--, about
 	Menu, tray, Disable, --= Monitor Select =--
  	Menu, tray, add, Screen Choice = %gotomon%, screenselecttray		; select screen menu
@@ -321,6 +343,57 @@ openini:
 	Sleep, 1000
 	goto, run
 
+mute:
+	Menu, Tray, Icon, ico_green.ico
+	WinActivate, Windows Media Center
+	send, {F8}
+	sleep, 500
+	goto, run
+
+timerset:
+	Menu, Tray, Icon, ico_green.ico
+	IniRead, timer, WMC fitscreen.ini, options, timer
+	SetENv, oldtimer, %timer%
+	InputBox, newtimer, WMC fitscreen, Set new timer start in seconds ? Now time is %timer% sec. Set between 1 and 240 seconds
+		if ErrorLevel
+			goto, run
+	IniWrite, %newtimer%, WMC fitscreen.ini, options, timer
+	;msgbox, old=%oldtimer%000 ... new=%newtimer%000
+	IfGreater, newtimer, 240, Goto, Timerset
+	IfLess, newtimer, 1, Goto, Timerset
+	Menu, Tray, Rename, Start Timer = %oldtimer%, Start Timer = %newtimer%
+	sleep, 500
+	goto, run
+
+clickico:
+	Menu, Tray, Icon, ico_about.ico
+	Sleep, 250
+	Menu, Tray, Icon, ico_full.ico
+	Sleep, 250
+	Menu, Tray, Icon, ico_green.ico
+	Sleep, 250
+	Menu, Tray, Icon, ico_loading.ico
+	Sleep, 250
+	Menu, Tray, Icon, ico_lock.ico
+	Sleep, 250
+	Menu, Tray, Icon, ico_maximize.ico
+	Sleep, 250
+	Menu, Tray, Icon, ico_minimize.ico
+	Sleep, 250
+	Menu, Tray, Icon, ico_monitor.ico
+	Sleep, 250
+	Menu, Tray, Icon, ico_mute.ico
+	Sleep, 250
+	Menu, Tray, Icon, ico_reboot.ico
+	Sleep, 250
+	Menu, Tray, Icon, ico_running.ico
+	Sleep, 250
+	Menu, Tray, Icon, ico_shut.ico
+	Sleep, 250
+	Menu, Tray, Icon, ico_wmc.ico
+	Sleep, 250
+	Goto, clickico
+
 ;;--- Quit (escape , esc) ---
 
 GuiClose2:
@@ -330,17 +403,11 @@ GuiClose2:
 
 secret:
 	Menu, Tray, Icon, ico_loading.ico
-	IniRead, gotomon, WMC fitscreen.ini, options, gotomon
-	IniRead, autorun, WMC fitscreen.ini, options, autorun
-	IniRead, timer, WMC fitscreen.ini, options, timer
-	IniRead, start, WMC fitscreen.ini, options, start
-	IniRead, minimize, WMC fitscreen.ini, options, minimize
-	IniRead, fullscreen, WMC fitscreen.ini, options, fullscreen
-	;;IfEqual, fullscreen , 1, SetEnv, fullscreenstart, /directmedia:general
+	IfEqual, fullscreen , 1, SetEnv, fullscreenstart, 1 /directmedia:general
 	IfEqual, fullscreen , 0, SetEnv, fullscreenstart, (disabled)
 	MsgBox, title=%title% mode=%mode% version=%version% author=%author%`n`nt_UpTime=%t_UpTime% Hotkey=F7 A_WorkingDir=%A_WorkingDir%`n`nfullscreen=%fullscreen% start=%start% autorun=%autorun% timer=%timer% minimize=%minimize%`n`ngotomon=%gotomon% fullscreenstart=%fullscreenstart%`n`nresolution1=%Mon1Bottom% resolution2=%Mon2Bottom%
 	IniRead, fullscreen, WMC fitscreen.ini, options, fullscreen
-	;;IfEqual, fullscreen , 1, SetEnv, fullscreenstart, /directmedia:general
+	IfEqual, fullscreen , 1, SetEnv, fullscreenstart, /directmedia:general
 	IfEqual, fullscreen , 0, SetEnv, fullscreenstart,
 	Menu, Tray, Icon, ico_running.ico
 	Return
@@ -453,6 +520,9 @@ fullscreen:
 ;              You just DO WHAT THE FUCK YOU WANT TO.
 ;
 ;		     NO FUCKING WARRANTY AT ALL
+;
+;      The warranty is included in your anus. Look carefully you
+;             might miss all theses small characters.
 ;
 ;	As is customary and in compliance with current global and
 ;	interplanetary regulations, the author of these pages disclaims
