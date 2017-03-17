@@ -13,7 +13,7 @@
 
 	SetEnv, title, WMC FitScreen
 	SetEnv, mode, Fit Screen : HotKey F7
-	SetEnv, version, Version 2017-03-14
+	SetEnv, version, Version 2017-03-16
 	SetEnv, Author, LostByteSoft
 
 ;;--- Softwares options ---
@@ -21,6 +21,8 @@
 	SetWorkingDir, %A_ScriptDir%
 	#SingleInstance Force
 	#Persistent
+	SetTitleMatchMode, Slow
+	SetTitleMatchMode, 2
 	t_UpTime := A_TickCount // 1000			; Elapsed seconds since start if uptime upper (Var timer specified in WMC fitscreen.ini) sec start imediately
 
 	FileInstall, WMC fitscreen.ini, WMC fitscreen.ini, 0
@@ -37,13 +39,17 @@
 	FileInstall, ico_minimize.ico, ico_minimize.ico, 0
 	FileInstall, ico_maximize.ico, ico_maximize.ico, 0
 	FileInstall, ico_mute.ico, ico_mute.ico, 0
+	FileInstall, ico_1.ico, ico_1.ico, 0
+	FileInstall, ico_2.ico, ico_2.ico, 0
 
-	IniRead, gotomon, WMC fitscreen.ini, options, gotomon
 	IniRead, autorun, WMC fitscreen.ini, options, autorun
 	IniRead, timer, WMC fitscreen.ini, options, timer
 	IniRead, start, WMC fitscreen.ini, options, start
 	IniRead, minimize, WMC fitscreen.ini, options, minimize
 	IniRead, fullscreen, WMC fitscreen.ini, options, fullscreen
+	IniRead, hotkeyf3, WMC fitscreen.ini, options, hotkeyf3
+	IniRead, hotkeyf4, WMC fitscreen.ini, options, hotkeyf4
+	IniRead, gotomon, WMC fitscreen.ini, options, gotomon
 
 	SysGet, MonitorCount, MonitorCount
 	SysGet, MonitorPrimary, MonitorPrimary
@@ -56,25 +62,25 @@
 	Menu, tray, add, --= WMC FitScreen =--, about
 	Menu, Tray, Icon, --= WMC FitScreen =--, ico_running.ico, 1
 	;Menu, tray, Disable, --= WMC FitScreen =--
-	Menu, tray, add, Hotkey: F7 (Move), mousesend
-	;Menu, tray, Disable, Hotkey: F7 (Move)
-	Menu, Tray, Icon, Hotkey: F7 (Move), ico_wmc.ico, 1
-	Menu, tray, add, Hotkey: F8 (Mute), mute
-	Menu, Tray, Icon, Hotkey: F8 (Mute), ico_mute.ico, 1
-	;Menu, tray, Disable, Hotkey: F8 (Mute)
+	Menu, tray, add, Hotkey: F3 - Monitor 1, ButtonScreen_1
+	Menu, Tray, Icon, Hotkey: F3 - Monitor 1, ico_1.ico, 1
+	Menu, tray, add, Hotkey: F4 - Monitor 2, ButtonScreen_2
+	Menu, Tray, Icon, Hotkey: F4 - Monitor 2, ico_2.ico, 1
+	Menu, tray, add, Hotkey: F7 - Move, mousesend
+	Menu, Tray, Icon, Hotkey: F7 - Move, ico_wmc.ico, 1
+	Menu, tray, add, Hotkey: F8 - Mute, mute
+	Menu, Tray, Icon, Hotkey: F8 - Mute, ico_mute.ico, 1
 	Menu, ThreeTree, Add, --= Hotkey list =--, about
 	Menu, ThreeTree, Disable, --= Hotkey list =--
-	Menu, ThreeTree, Add, F7 move, about
-	Menu, ThreeTree, Add, F8 mute, about
-	Menu, ThreeTree, Add, F8 mute, about
+	Menu, ThreeTree, Add, Ctrl+M = Go to music, about
+	Menu, ThreeTree, Add, Ctrl+I = Go to Pictures, about
+	Menu, ThreeTree, Add, Ctrl+E = Go to Videos, about
 	Menu, ThreeTree, Add, Ctrl+U = Change DVD subtitles, about
 	Menu, ThreeTree, Add, Ctrl+T = Go to Live TV, about
 	Menu, ThreeTree, Add, Ctrl+R = Record a TV show, about
 	Menu, ThreeTree, Add, F9/F10 = Volume Up/Volume Down, about
-	Menu, ThreeTree, Add, Ctrl+M = Go to music, about
-	Menu, ThreeTree, Add, Ctrl+I = Go to Pictures, about
-	Menu, ThreeTree, Add, Ctrl+E = Go to Videos, about
 	Menu, ThreeTree, Add, Icon Clicker, clickico
+	Menu, ThreeTree, Icon, Icon Clicker, ico_lock.ico, 1
 	Menu, Tray, Add, ---= Hotkey list =--, :ThreeTree
 	menu, tray, add
 	Menu, tray, add, Exit FitScreen, GuiClose2				; GuiClose exit program
@@ -93,9 +99,10 @@
 	Menu, tray, Disable, --= Options =--
 	Menu, tray, add, Open WMC fitscreen.ini, openini
 	Menu, tray, add, Autorun On/Off = %autorun%, autorunonoff		; autorun
-	Menu, tray, add, Fullscreen On/Off = %fullscreen%, fullscreenonoff	; autorun
+	Menu, tray, add, Fullscreen On/Off = %fullscreen%, fullscreenonoff
+	menu, tray, add, Hotkey F3 move = %hotkeyf3%, hotkeyonoff
+	menu, tray, add, Hotkey F4 move = %hotkeyf4%, hotkeyonoff
 	menu, tray, add, Start Timer = %timer%, timerset
-	;Menu, tray, Disable, Start Timer = %timer%
 	menu, tray, add
 	menu, tray, add, --= Monitor Select =--, about
 	Menu, tray, Disable, --= Monitor Select =--
@@ -125,9 +132,13 @@
 	IfEqual, MonitorCount, 1, SetEnv, gotomon, 1
 	IfEqual, fullscreen , 1, SetEnv, fullscreenstart, /directmedia:general
 	IfEqual, fullscreen , 0, SetEnv, fullscreenstart,
-	IfEqual, gotomon, 1, Menu, TwoTree, Disable, Monitor 1 and move
-	IfEqual, gotomon, 2, Menu, TwoTree, Disable, Monitor 2 and move
+	;;IfEqual, gotomon, 1, Menu, TwoTree, Disable, Monitor 1 and move
+	;;IfEqual, gotomon, 2, Menu, TwoTree, Disable, Monitor 2 and move
 	IfEqual, MonitorCount, 1, Menu, TwoTree, Disable, Monitor 2 and move
+	;IfEqual, hotkeyf3, 0, Menu, Tray, Disable, Hotkey: F3 (Mon 1)
+	;IfEqual, hotkeyf4, 0, Menu, Tray, Disable, Hotkey: F4 (Mon 2)
+	IfEqual, hotkeyf3, 1, Run, "WMC F3 send to mon 1.exe"
+	IfEqual, hotkeyf4, 1, Run, "WMC F4 send to mon 2.exe"
 	IfWinExist, Windows Media Center,, goto, move
 	goto, start
 
@@ -143,6 +154,8 @@ start:
 			run, "%windir%\ehome\ehshell.exe" %start%
 			sleep, 500
 			WinWait, Windows Media Center
+			Menu, Tray, Icon, ico_green.ico
+			sleep, 500
 			IfEqual, minimize, 1, goto, minimize
 			goto, move
 		}
@@ -166,17 +179,13 @@ run:
 
 move:
 	Menu, Tray, Icon, ico_loading.ico
-	sleep, 500
-	SetEnv, Mon1Bottom,
-	SysGet, Mon1, Monitor, 1
+	IniRead, gotomon, WMC fitscreen.ini, options, gotomon
 	IfEqual, Mon1Bottom , 768, goto, 768
 	IfEqual, Mon1Bottom , 900, goto, 900
 	IfEqual, Mon1Bottom , 1050, goto, 1050
 	IfEqual, Mon1Bottom , 1080, goto, 1080
-	;;MsgBox, You screen is not supported. Goto Default values. It could be not best adjust.
+	MsgBox, You screen is not supported. Goto Default values. It could be not best adjust. (Blocked to move)
 	goto, Default
-
-	;; WinMove, WinTitle, WinText, X, Y [, Width, Height, ExcludeTitle, ExcludeText]
 
 768:
 	IfEqual, gotomon ,2 , Goto, mon2-768
@@ -184,12 +193,11 @@ move:
 	WinActivate, Windows Media Center
 	Goto, Run
 	mon2-768:
-	Menu, Tray, Icon, ico_green.ico
-	SysGet, Mon2, Monitor, 2
 	IfEqual, Mon2Bottom , 900, goto, mon2-900
 	IfEqual, Mon2Bottom , 1050, goto, mon2-1050
 	IfEqual, Mon2Bottom , 1080, goto, mon2-1080
-	;;msgbox, Ecran 2 Left: %Mon2Left% -- Top: %Mon2Top% -- Right: %Mon2Right% -- Bottom %Mon2Bottom%... gotomon=%gotomon% Mon2x=%mon2x%
+	Menu, Tray, Icon, ico_green.ico
+	WinMove, Windows Media Center, , %Mon2Left%, 0 , 1246
 	WinMove, Windows Media Center, , %Mon2Left%, 0 , 1246
 	WinActivate, Windows Media Center
 	Goto, Run
@@ -200,12 +208,11 @@ move:
 	WinActivate, Windows Media Center
 	Goto, Run
 	mon2-900:
-	Menu, Tray, Icon, ico_green.ico
-	SysGet, Mon2, Monitor, 2
 	IfEqual, Mon2Bottom , 768, goto, mon2-768
 	IfEqual, Mon2Bottom , 1050, goto, mon2-1050
 	IfEqual, Mon2Bottom , 1080, goto, mon2-1080
-	;;msgbox, Ecran 2 Left: %Mon2Left% -- Top: %Mon2Top% -- Right: %Mon2Right% -- Bottom %Mon2Bottom%... gotomon=%gotomon% Mon2x=%mon2x%
+	Menu, Tray, Icon, ico_green.ico
+	WinMove, Windows Media Center, , %Mon2Left%, 0 , 1480
 	WinMove, Windows Media Center, , %Mon2Left%, 0 , 1480
 	WinActivate, Windows Media Center
 	Goto, Run
@@ -216,12 +223,11 @@ move:
 	WinActivate, Windows Media Center
 	Goto, Run
 	mon2-1050:
-	Menu, Tray, Icon, ico_green.ico
-	SysGet, Mon2, Monitor, 2
 	IfEqual, Mon2Bottom , 768, goto, mon2-768
 	IfEqual, Mon2Bottom , 900, goto, mon2-900
 	IfEqual, Mon2Bottom , 1080, goto, mon2-1080
-	;;msgbox, Ecran 2 Left: %Mon2Left% -- Top: %Mon2Top% -- Right: %Mon2Right% -- Bottom %Mon2Bottom%... gotomon=%gotomon% Mon2x=%mon2x%
+	Menu, Tray, Icon, ico_green.ico
+	WinMove, Windows Media Center, , %Mon2Left%, 33 , 1680
 	WinMove, Windows Media Center, , %Mon2Left%, 33 , 1680
 	WinActivate, Windows Media Center
 	Goto, Run
@@ -232,17 +238,23 @@ move:
 	WinActivate, Windows Media Center
 	Goto, Run
 	mon2-1080:
-	Menu, Tray, Icon, ico_green.ico
-	SysGet, Mon2, Monitor, 2
 	IfEqual, Mon2Bottom , 768, goto, mon2-768
 	IfEqual, Mon2Bottom , 900, goto, mon2-900
 	IfEqual, Mon2Bottom , 1050, goto, mon2-1050
-	;;msgbox, Ecran 2 Left: %Mon2Left% -- Top: %Mon2Top% -- Right: %Mon2Right% -- Bottom %Mon2Bottom%... gotomon=%gotomon% Mon2x=%mon2x%
-	WinMove, Windows Media Center, , %Mon2Left%, 19 , 1680
+	Menu, Tray, Icon, ico_green.ico
+	;; msgbox, Ecran 2 -- mon2Left=%Mon2Left% -- Top=%Mon2Top% -- Right=%Mon2Right% -- Bottom=%Mon2Bottom% -- gotomon=%gotomon% -- 1920x=%1920x%
+	;; WinMove, Windows Media Center, , %Mon2Left%, 0 , 1800
+	;; WinMove, WinTitle, WinText, X, Y, Width, Height
+	SetEnv, 1920x, %Mon2Left%
+	EnvAdd, 1920x, 30
+	;;msgbox, Ecran 2 -- mon2Left=%Mon2Left% -- Top=%Mon2Top% -- Right=%Mon2Right% -- Bottom=%Mon2Bottom% -- gotomon=%gotomon% -- 1920x=%1920x%
+	WinMove, Windows Media Center,, %1920x%, 0 , 1855,
+	;; sleep, 500
+	WinMove, Windows Media Center,, %1920x%, 0 , 1855,
 	WinActivate, Windows Media Center
 	Goto, Run
 
-Default:	;; Not the best fit. Screen 1 only.
+Default:
 	;;MsgBox, Ecran 1 Left: %Mon1Left% -- Top: %Mon1Top% -- Right: %Mon1Right% -- Bottom %Mon1Bottom%... Default
 	SetEnv, Var1, %Mon1Right%
 	SetEnv, Var2, 100
@@ -252,11 +264,13 @@ Default:	;; Not the best fit. Screen 1 only.
 	var3 -= var4
 	;;Msgbox x25 y25 w%Var1% h%Var3% Visual NEW position (ESC exit) (OK continue)
 	sleep, 500
-	WinMove, Windows Media Center, , 0, 0 , %Var1%, %Var3%
+	Menu, Tray, Icon, ico_green.ico
+	WinMove, Windows Media Center, , 50, 50 , %Var1%, ;;%Var3%
 	WinActivate, Windows Media Center
 	Goto, Run
 
 ;--- Gui 2 start ---
+
 	screenselecttray:
 		Menu, Tray, Icon, ico_green.ico
 		IfEqual, MonitorCount, 1, Goto, onlyonemonitor
@@ -274,8 +288,6 @@ Default:	;; Not the best fit. Screen 1 only.
 		Return
 
 	GuiClose:
-		goto, ButtonCancel
-
 	ButtonCancel:
 		Gui, destroy
 		goto, move
@@ -295,11 +307,12 @@ Default:	;; Not the best fit. Screen 1 only.
 		IfEqual, gotomon, 1, Menu, TwoTree, Enable, Monitor 2 and move
 		IfEqual, gotomon, 2, Menu, TwoTree, Enable, Monitor 1 and move
 		Menu, TwoTree, Disable, Monitor 2 and move
-
 		goto, ButtonCancel
 
 	ButtonScreen_1:
 		Gui, destroy
+		Menu, Tray, Icon, ico_green.ico
+		;IfEqual, MonitorCount, 1, Goto, onlyonemonitor
 		IfEqual, gotomon, 1, goto, run
 		IniWrite, 1, WMC fitscreen.ini, options, gotomon
 		SetEnv, gotomon, 1
@@ -310,6 +323,8 @@ Default:	;; Not the best fit. Screen 1 only.
 
 	ButtonScreen_2:
 		Gui, destroy
+		Menu, Tray, Icon, ico_green.ico
+		IfEqual, MonitorCount, 1, Goto, onlyonemonitor
 		IfEqual, gotomon, 2, goto, run
 		IniWrite, 2, WMC fitscreen.ini, options, gotomon
 		SetEnv, gotomon, 2
@@ -320,7 +335,7 @@ Default:	;; Not the best fit. Screen 1 only.
 
 	onlyonemonitor:
 		Menu, Tray, Icon, ico_about.ico
-		MsgBox, 0, WMC FitScreen, You only have one monitor. You could not change this setting.
+		MsgBox, 0, WMC FitScreen, You only have one monitor. You could not change this setting. (Time out 10 sec.), 10
 		Goto, run
 
 ;--- Gui 2 end ---
@@ -366,33 +381,63 @@ timerset:
 	goto, run
 
 clickico:
+	Menu, tray, add, Stop Clicker, doReload		; Reload the script.
+	sleep, 500
 	Menu, Tray, Icon, ico_about.ico
-	Sleep, 250
+	Sleep, 500
 	Menu, Tray, Icon, ico_full.ico
-	Sleep, 250
+	Sleep, 500
 	Menu, Tray, Icon, ico_green.ico
-	Sleep, 250
+	Sleep, 500
 	Menu, Tray, Icon, ico_loading.ico
-	Sleep, 250
+	Sleep, 500
 	Menu, Tray, Icon, ico_lock.ico
-	Sleep, 250
+	Sleep, 500
 	Menu, Tray, Icon, ico_maximize.ico
-	Sleep, 250
+	Sleep, 500
 	Menu, Tray, Icon, ico_minimize.ico
-	Sleep, 250
+	Sleep, 500
 	Menu, Tray, Icon, ico_monitor.ico
-	Sleep, 250
+	Sleep, 500
 	Menu, Tray, Icon, ico_mute.ico
-	Sleep, 250
+	Sleep, 500
 	Menu, Tray, Icon, ico_reboot.ico
-	Sleep, 250
+	Sleep, 500
 	Menu, Tray, Icon, ico_running.ico
-	Sleep, 250
+	Sleep, 500
 	Menu, Tray, Icon, ico_shut.ico
-	Sleep, 250
+	Sleep, 500
 	Menu, Tray, Icon, ico_wmc.ico
-	Sleep, 250
+	Sleep, 500
+	Menu, Tray, Icon, ico_1.ico
+	Sleep, 500
+	Menu, Tray, Icon, ico_2.ico
+	Sleep, 500
 	Goto, clickico
+
+hotkeyonoff:
+	Menu, Tray, Icon, ico_green.ico
+	IniRead, hotkeyf3, WMC fitscreen.ini, options, hotkeyf3
+	IfEqual, hotkeyf3, 1, goto, hotkeyoff
+	IniWrite, 1, WMC fitscreen.ini, options, hotkeyf3
+	IniWrite, 1, WMC fitscreen.ini, options, hotkeyf4
+	Menu, Tray, Rename, Hotkey F3 move = 0, Hotkey F3 move = 1
+	Menu, Tray, Rename, Hotkey F4 move = 0, Hotkey F4 move = 1
+	Run, "WMC F3 send to mon 1.exe"
+	Run, "WMC F4 send to mon 2.exe"
+	TrayTip, %title%, Hotkey Enabled = 1, 2, 2
+	sleep, 500
+	goto, run
+	hotkeyoff:
+	IniWrite, 0, WMC fitscreen.ini, options, hotkeyf3
+	IniWrite, 0, WMC fitscreen.ini, options, hotkeyf4
+	Run, taskkill /f /im "WMC F4 send to mon 2.exe"
+	Run, taskkill /f /im "WMC F3 send to mon 1.exe"
+	Menu, Tray, Rename, Hotkey F3 move = 1, Hotkey F3 move = 0
+	Menu, Tray, Rename, Hotkey F4 move = 1, Hotkey F4 move = 0
+	TrayTip, %title%, Hotkey Disabled = 0, 2, 2
+	sleep, 500
+	goto, run
 
 ;;--- Quit (escape , esc) ---
 
@@ -450,7 +495,7 @@ autorunonoff:
 	IniWrite, 1, WMC fitscreen.ini, options, autorun
 	SetEnv, autorun, 1
 	TrayTip, %title%, Autorun enabled - %autorun%, 2, 2
-	Menu, Tray, Rename, Autorun On/Off = 0, Autorun On/Off - 1
+	Menu, Tray, Rename, Autorun On/Off = 0, Autorun On/Off = 1
 	Menu, Tray, Icon, ico_running.ico
 	Return
 
@@ -458,7 +503,7 @@ autorunonoff:
 	IniWrite, 0, WMC fitscreen.ini, options, autorun
 	SetEnv, autorun, 0
 	TrayTip, %title%, Autorun disabled - %autorun%, 2, 2
-	Menu, Tray, Rename, Autorun On/Off = 1, Autorun On/Off - 0
+	Menu, Tray, Rename, Autorun On/Off = 1, Autorun On/Off = 0
 	Menu, Tray, Icon, ico_running.ico
 	Return
 
