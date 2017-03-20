@@ -2,11 +2,20 @@
 
 ;;	F4 move to monitor 2
 
+;;	Windows Media Center Fit Screen. Best fit for WMC without full screen. On monitor 1 or 2.
+;;	Ajusted resolutions: 1366 x 768 1600 x 900  1680 x 1050  1920 x 1080
+;;	Compatibility: WINDOWS MEDIA CENTER ,  Windows Xp , Windows Vista , Windows 7 , Windows 8
+;;	All files must be in same folder. Where you want.
+;;	64 bit AHK version : 1.1.24.2 64 bit Unicode
+;;	Version 2017-03-08 - 2 screen supported.
+;;	; mean functionnal but disabled and mayby work on it
+;;	;; mean unfunctionnal and be never it
+
 ;;--- Softwares Variables ---
 
 	SetEnv, title, WMC F4 move to monitor 2
 	SetEnv, mode, Fit Screen : HotKey F4
-	SetEnv, version, Version 2017-03-15
+	SetEnv, version, Version 2017-03-20
 	SetEnv, Author, LostByteSoft
 
 ;;--- Softwares options ---
@@ -24,21 +33,21 @@
 ;;--- Menu Tray options ---
 
 	Menu, Tray, NoStandard
-	Menu, tray, add, --= WMC FitScreen =--, about
-	Menu, Tray, Icon, --= WMC FitScreen =--, ico_wmc.ico, 1
-	Menu, tray, add, Hotkey: F3 (Mon 1), run2
-	Menu, Tray, Icon, Hotkey: F3 (Mon 1), ico_1.ico, 1
-	Menu, tray, add, Hotkey: F4 (Mon 2), run2
-	Menu, Tray, Icon, Hotkey: F4 (Mon 2), ico_2.ico, 1
-	Menu, tray, add
-	;Menu, tray, Disable, %title%
 	Menu, tray, add, Exit, GuiClose2
 	Menu, Tray, Icon, Exit, ico_shut.ico
+	Menu, tray, add
+	Menu, tray, add, --= WMC FitScreen =--, about
+	Menu, Tray, Icon, --= WMC FitScreen =--, ico_wmc.ico, 1
 	Menu, tray, add
 	Menu, tray, add, About - LostByteSoft, about
 	Menu, Tray, Icon, About - LostByteSoft, ico_about.ico, 1
 	Menu, tray, add, %Version% , version
 	Menu, Tray, Icon, %Version%, ico_about.ico, 1
+	Menu, tray, add
+	Menu, tray, add, Hotkey: F3 (Mon 1), run2
+	Menu, Tray, Icon, Hotkey: F3 (Mon 1), ico_1.ico, 1
+	Menu, tray, add, Hotkey: F4 (Mon 2), run2
+	Menu, Tray, Icon, Hotkey: F4 (Mon 2), ico_2.ico, 1
 	Menu, Tray, Tip, %title%
 
 ;;--- Software start here ---
@@ -143,7 +152,7 @@ Default:
 	;;Msgbox x25 y25 w%Var1% h%Var3% Visual NEW position (ESC exit) (OK continue)
 	sleep, 500
 	Menu, Tray, Icon, ico_green.ico
-	WinMove, Windows Media Center, , 0, 0 , %Var1%, %Var3%
+	WinMove, Windows Media Center, , 0, 0 , %Var1%, ;%Var3%
 	WinActivate, Windows Media Center
 	Goto, Run
 
