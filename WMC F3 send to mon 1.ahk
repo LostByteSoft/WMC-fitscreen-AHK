@@ -15,7 +15,7 @@
 
 	SetEnv, title, WMC F3 move to monitor 1
 	SetEnv, mode, Fit Screen : HotKey F3
-	SetEnv, version, Version 2017-03-20
+	SetEnv, version, Version 2017-03-22
 	SetEnv, Author, LostByteSoft
 
 ;;--- Softwares options ---
@@ -33,11 +33,11 @@
 ;;--- Menu Tray options ---
 
 	Menu, Tray, NoStandard
-	Menu, tray, add, Exit, GuiClose2
-	Menu, Tray, Icon, Exit, ico_shut.ico
-	Menu, tray, add
 	Menu, tray, add, --= WMC FitScreen =--, about
 	Menu, Tray, Icon, --= WMC FitScreen =--, ico_wmc.ico, 1
+	Menu, tray, add
+	Menu, tray, add, Exit, GuiClose2
+	Menu, Tray, Icon, Exit, ico_shut.ico
 	Menu, tray, add
 	Menu, tray, add, About - LostByteSoft, about
 	Menu, Tray, Icon, About - LostByteSoft, ico_about.ico, 1
