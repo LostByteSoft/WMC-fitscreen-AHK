@@ -1,5 +1,7 @@
 ;;--- Head --- Informations --- AHK ---
 
+;;	File name: WMC fitscreen.exe
+
 ;;	Windows Media Center Fit Screen. Best fit for WMC without full screen. On monitor 1 or 2.
 ;;	Ajusted resolutions: 1366 x 768 1600 x 900  1680 x 1050  1920 x 1080
 ;;	Compatibility: WINDOWS MEDIA CENTER ,  Windows Xp , Windows Vista , Windows 7 , Windows 8
@@ -13,8 +15,8 @@
 ;;--- Softwares Variables ---
 
 	SetEnv, title, WMC FitScreen
-	SetEnv, mode, Fit Screen : HotKey F7
-	SetEnv, version, Version 2017-03-29
+	SetEnv, mode, WMC Best Fit Screen : F7
+	SetEnv, version, Version 2017-04-23
 	SetEnv, Author, LostByteSoft
 
 ;;--- Softwares options ---
@@ -45,8 +47,6 @@
 	FileInstall, ico_volume_2.ico, ico_volume_2.ico, 0
 	FileInstall, ico_options.ico, ico_options.ico, 0
 	FileInstall, ico_HotKeys.ico, ico_HotKeys.ico, 0
-	FileInstall, WMC F3 send to mon 1.exe, WMC F3 send to mon 1.exe, 0
-	FileInstall, WMC F4 send to mon 2.exe, WMC F4 send to mon 2.exe, 0
 
 	IniRead, autorun, WMC fitscreen.ini, options, autorun
 	IniRead, timer, WMC fitscreen.ini, options, timer
@@ -55,6 +55,7 @@
 	IniRead, fullscreen, WMC fitscreen.ini, options, fullscreen
 	IniRead, hotkeyf3, WMC fitscreen.ini, options, hotkeyf3
 	IniRead, hotkeyf4, WMC fitscreen.ini, options, hotkeyf4
+	IniRead, hotkeyf5, WMC fitscreen.ini, options, hotkeyf5
 	IniRead, gotomon, WMC fitscreen.ini, options, gotomon
 
 	SysGet, MonitorCount, MonitorCount
@@ -70,8 +71,8 @@
 	menu, tray, add
 	Menu, tray, add, Exit FitScreen, GuiClose2				; GuiClose exit program
 	Menu, Tray, Icon, Exit FitScreen, ico_shut.ico
-	Menu, tray, add, Refresh, doReload					; Reload the script.
-	Menu, Tray, Icon, Refresh, ico_reboot.ico, 1
+	Menu, tray, add, Refresh FitScreen, doReload				; Reload the script.
+	Menu, Tray, Icon, Refresh FitScreen, ico_reboot.ico, 1
 	menu, tray, add
 	menu, tray, add, --= Options General =--, about
 	Menu, tray, Disable, --= Options General =--
@@ -91,27 +92,25 @@
 	Menu, TwoTree, Icon, Monitor 1 and move, ico_monitor.ico
 	Menu, TwoTree, Add, Monitor 2 and move, ButtonScreen_2
 	Menu, TwoTree, Icon, Monitor 2 and move, ico_monitor.ico
-	menu, tray, add, Hotkey F3 move = %hotkeyf3%, hotkeyonoff
-	Menu, Tray, Icon, Hotkey F3 move = %hotkeyf3%, ico_HotKeys.ico, 1
-	menu, tray, add, Hotkey F4 move = %hotkeyf4%, hotkeyonoff
-	Menu, Tray, Icon, Hotkey F4 move = %hotkeyf4%, ico_HotKeys.ico, 1
+	;menu, tray, add, Hotkey F3 move = %hotkeyf3%, hotkeyonoff
+	;Menu, Tray, Icon, Hotkey F3 move = %hotkeyf3%, ico_HotKeys.ico, 1
+	;menu, tray, add, Hotkey F4 move = %hotkeyf4%, hotkeyonoff
+	;Menu, Tray, Icon, Hotkey F4 move = %hotkeyf4%, ico_HotKeys.ico, 1
 	Menu, Tray, Add, Click select monitor, :TwoTree
 	menu, tray, add
 	Menu, ThreeTree, Add, --= Hotkey list =--, about
-	Menu, ThreeTree, Disable, --= Hotkey list =--
-	Menu, ThreeTree, Add, Ctrl+M = Go to music, about
-	Menu, ThreeTree, Add, Ctrl+I = Go to Pictures, about
-	Menu, ThreeTree, Add, Ctrl+E = Go to Videos, about
-	Menu, ThreeTree, Add, Ctrl+U = Change DVD subtitles, about
-	Menu, ThreeTree, Add, Ctrl+T = Go to Live TV, about
-	Menu, ThreeTree, Add, Ctrl+R = Record a TV show, about
-	Menu, ThreeTree, Add, F3 - Monitor 1, about
-	Menu, ThreeTree, Add, F4 - Monitor 2, about
+	;Menu, ThreeTree, Disable, --= Hotkey list =--
+	;Menu, ThreeTree, Add, Ctrl+M = Go to music, about
+	;Menu, ThreeTree, Add, Ctrl+I = Go to Pictures, about
+	;Menu, ThreeTree, Add, Ctrl+E = Go to Videos, about
+	;Menu, ThreeTree, Add, Ctrl+U = Change DVD subtitles, about
+	;Menu, ThreeTree, Add, Ctrl+T = Go to Live TV, about
+	;Menu, ThreeTree, Add, Ctrl+R = Record a TV show, about
+	;Menu, ThreeTree, Add, F3 - Monitor 1, about
+	;Menu, ThreeTree, Add, F4 - Monitor 2, about
 	Menu, ThreeTree, Add, F7 - Move, about
 	Menu, ThreeTree, Add, F8 - Mute, about
 	Menu, ThreeTree, Add, F9/F10 = Volume Up/Volume Down, about
-	Menu, ThreeTree, Add, Icon Clicker, clickico
-	Menu, ThreeTree, Icon, Icon Clicker, ico_lock.ico, 1
 	Menu, tray, add, About - LostByteSoft, about				; Creates a new menu item.
 	Menu, Tray, Icon, About - LostByteSoft, ico_about.ico, 1
 	Menu, tray, add, %Version% , version					; About version
@@ -120,10 +119,10 @@
 	Menu, Tray, Icon, Secret MsgBox, ico_lock.ico, 1
 	menu, tray, add
 	Menu, Tray, Add, ---= Hotkey list =--, :ThreeTree
-	Menu, tray, add, Hotkey: F3 - Monitor 1, ButtonScreen_1
-	Menu, Tray, Icon, Hotkey: F3 - Monitor 1, ico_1.ico, 1
-	Menu, tray, add, Hotkey: F4 - Monitor 2, ButtonScreen_2
-	Menu, Tray, Icon, Hotkey: F4 - Monitor 2, ico_2.ico, 1
+	;Menu, tray, add, Hotkey: F3 - Monitor 1, ButtonScreen_1
+	;Menu, Tray, Icon, Hotkey: F3 - Monitor 1, ico_1.ico, 1
+	;Menu, tray, add, Hotkey: F4 - Monitor 2, ButtonScreen_2
+	;Menu, Tray, Icon, Hotkey: F4 - Monitor 2, ico_2.ico, 1
 	Menu, tray, add, Hotkey: F7 - Move, mousesend
 	Menu, Tray, Icon, Hotkey: F7 - Move, ico_wmc.ico, 1
 	Menu, tray, add, Hotkey: F8 - Mute, mute
@@ -131,8 +130,8 @@
 	menu, tray, add
 	Menu, tray, add, WMC Exit / Close, wmcclose				; Close or Exit WMC, useful when in nochrome mode
 	Menu, Tray, Icon, WMC Exit / Close, ico_shut.ico
-	Menu, tray, add, WMC Full Screen / Alt+Enter, fullscreen			; Fullscreen
-	Menu, Tray, Icon, WMC Full Screen / Alt+Enter, ico_full.ico, 1
+	Menu, tray, add, WMC Full Screen, fullscreen			; Fullscreen
+	Menu, Tray, Icon, WMC Full Screen, ico_full.ico, 1
 	Menu, tray, add, WMC Minimize, minimize					; minimize
 	Menu, Tray, Icon, WMC minimize, ico_minimize.ico, 1
 	Menu, tray, add, WMC Maximize, Maximize					; Maximize
@@ -147,8 +146,9 @@
 	IfEqual, Monitorcount, 1, IniWrite, 1, WMC fitscreen.ini, options, gotomon
 	IfEqual, fullscreen , 1, SetEnv, fullscreenstart, /directmedia:general
 	IfEqual, fullscreen , 0, SetEnv, fullscreenstart,
-	IfEqual, hotkeyf3, 1, Run, "WMC F3 send to mon 1.exe"
-	IfEqual, hotkeyf4, 1, Run, "WMC F4 send to mon 2.exe"
+	IfEqual, hotkeyf3, 1, Run, "wmc_monitor1.exe"
+	IfEqual, hotkeyf4, 1, Run, "wmc_monitor2.exe"
+	IfEqual, hotkeyf5, 1, Run, "wmc_minimize.exe"
 	IfWinExist, Windows Media Center,, goto, move
 	goto, start
 
@@ -281,7 +281,6 @@ Default:
 
 	screenselecttray:
 		Menu, Tray, Icon, ico_green.ico
-		;IfEqual, MonitorCount, 1, Goto, onlyonemonitor
 		setenv oldvalue, %gotomon%
 
 	screenselectgui2:
@@ -337,11 +336,6 @@ Default:
 		Menu, Tray, Rename, Screen Choice = %oldgotomon%, Screen Choice = 2
 		goto, ButtonCancel
 
-	onlyonemonitor:
-		Menu, Tray, Icon, ico_about.ico
-		MsgBox, 0, WMC FitScreen, You only have one monitor. You could not change this setting. (Time out 10 sec.), 10
-		Goto, run
-
 ;--- Gui 2 end ---
 
 minimize:
@@ -394,46 +388,6 @@ timerset:
 	Menu, Tray, Rename, Start Timer = %oldtimer%, Start Timer = %newtimer%
 	sleep, 500
 	goto, run
-
-clickico:
-	Menu, ThreeTree, Add, Stop Clicker, doReload		; Reload the script.
-	sleep, 500
-	Menu, Tray, Icon, ico_about.ico
-	Sleep, 500
-	Menu, Tray, Icon, ico_full.ico
-	Sleep, 500
-	Menu, Tray, Icon, ico_green.ico
-	Sleep, 500
-	Menu, Tray, Icon, ico_loading.ico
-	Sleep, 500
-	Menu, Tray, Icon, ico_lock.ico
-	Sleep, 500
-	Menu, Tray, Icon, ico_maximize.ico
-	Sleep, 500
-	Menu, Tray, Icon, ico_minimize.ico
-	Sleep, 500
-	Menu, Tray, Icon, ico_monitor.ico
-	Sleep, 500
-	Menu, Tray, Icon, ico_mute.ico
-	Sleep, 500
-	Menu, Tray, Icon, ico_reboot.ico
-	Sleep, 500
-	Menu, Tray, Icon, ico_running.ico
-	Sleep, 500
-	Menu, Tray, Icon, ico_shut.ico
-	Sleep, 500
-	Menu, Tray, Icon, ico_wmc.ico
-	Sleep, 500
-	Menu, Tray, Icon, ico_1.ico
-	Sleep, 500
-	Menu, Tray, Icon, ico_2.ico
-	Sleep, 500
-	Menu, Tray, Icon, ico_volume_2.ico
-	Sleep, 500
-	Menu, Tray, Icon, ico_options.ico
-	Sleep, 500
-	Menu, Tray, Icon, ico_HotKeys.ico
-	Goto, clickico
 
 hotkeyonoff:
 	Menu, Tray, Icon, ico_green.ico
