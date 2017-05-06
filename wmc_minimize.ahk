@@ -10,7 +10,7 @@
 
 	SetEnv, title, WMC F5 Minimize
 	SetEnv, mode, Hotkey : F5 minimize only if activated
-	SetEnv, version, Version 2017-04-23
+	SetEnv, version, Version 2017-05-06
 	SetEnv, Author, LostByteSoft
 
 ;;--- Softwares options ---
@@ -28,6 +28,7 @@
 	FileInstall, ico_wmc.ico, ico_wmc.ico, 0
 	FileInstall, ico_HotKeys.ico, ico_HotKeys.ico
 	FileInstall, ico_minimize.ico, ico_minimize.ico
+	FileInstall, ico_pause.ico, ico_pause.ico, 0
 
 ;;--- Menu Tray options ---
 
@@ -37,6 +38,8 @@
 	Menu, tray, add
 	Menu, tray, add, Exit, ExitApp
 	Menu, Tray, Icon, Exit, ico_shut.ico
+	Menu, tray, add, Pause/Toggle FitScreen, pause				; pause
+	Menu, Tray, Icon, Pause/Toggle FitScreen, ico_pause.ico
 	Menu, tray, add, Deactivate HotKey, Deactivate
 	Menu, Tray, Icon, Deactivate HotKey, ico_minimize.ico
 	Menu, tray, add
@@ -50,8 +53,6 @@
 	Menu, Tray, Tip, %title%
 
 ;;--- Software start here ---
-
-	; TrayTip, %title%, %mode%, 2, 1
 
 start:
 	KeyWait, F5, D
@@ -68,6 +69,11 @@ minimize:
 Deactivate:
 	IniWrite, 0, WMC fitscreen.ini, options, hotkeyf5
 	Goto, ExitApp
+
+pause:
+	Menu, Tray, Icon, ico_pause.ico
+	Pause ,Toggle
+	Goto, start
 
 ;;--- Quit (escape , esc) ---
 

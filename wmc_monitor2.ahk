@@ -8,9 +8,9 @@
 
 ;;--- Softwares Variables ---
 
-	SetEnv, title, WMC F4 move to monitor 2
+	SetEnv, title, WMC F3 move to monitor 2
 	SetEnv, mode, Fit Screen : HotKey F4
-	SetEnv, version, Version 2017-04-23
+	SetEnv, version, Version 2017-05-06
 	SetEnv, Author, LostByteSoft
 
 ;;--- Softwares options ---
@@ -21,9 +21,10 @@
 
 	FileInstall, ico_shut.ico, ico_shut.ico, 0
 	FileInstall, ico_about.ico, ico_about.ico, 0
-	FileInstall, ico_1.ico, ico_1.ico, 0
 	FileInstall, ico_2.ico, ico_2.ico, 0
 	FileInstall, ico_wmc.ico, ico_wmc.ico, 0
+	FileInstall, ico_HotKeys.ico, ico_HotKeys.ico, 0
+	FileInstall, ico_pause.ico, ico_pause.ico, 0
 
 ;;--- Menu Tray options ---
 
@@ -33,6 +34,8 @@
 	Menu, tray, add
 	Menu, tray, add, Exit, GuiClose2
 	Menu, Tray, Icon, Exit, ico_shut.ico
+	Menu, tray, add, Pause/Toggle FitScreen, pause				; pause
+	Menu, Tray, Icon, Pause/Toggle FitScreen, ico_pause.ico
 	Menu, tray, add, Deactivate HotKey, Deactivate
 	Menu, Tray, Icon, Deactivate HotKey, ico_2.ico
 	Menu, tray, add
@@ -41,17 +44,15 @@
 	Menu, tray, add, %Version% , version
 	Menu, Tray, Icon, %Version%, ico_about.ico, 1
 	Menu, tray, add
-	Menu, tray, add, Hotkey: F3 (Mon 1), run2
-	Menu, Tray, Icon, Hotkey: F3 (Mon 1), ico_1.ico, 1
-	Menu, tray, add, Hotkey: F4 (Mon 2), run2
-	Menu, Tray, Icon, Hotkey: F4 (Mon 2), ico_2.ico, 1
+	Menu, tray, add, Hotkey: F3 Monitor 2, run2
+	Menu, Tray, Icon, Hotkey: F3 Monitor 2, ico_HotKeys.ico
 	Menu, Tray, Tip, %title%
 
 ;;--- Software start here ---
 
 run:
 	Menu, Tray, Icon, ico_2.ico
-	KeyWait, F4, D
+	KeyWait, F3, D
 	run2:
 	SysGet, MonitorCount, MonitorCount
 	SysGet, MonitorPrimary, MonitorPrimary
@@ -158,8 +159,13 @@ onlyonemonitor:
 	Goto, run
 
 Deactivate:
-	IniWrite, 0, WMC fitscreen.ini, options, hotkeyf4
+	IniWrite, 0, WMC fitscreen.ini, options, hotkeyf3
 	Goto, ExitApp
+
+pause:
+	Menu, Tray, Icon, ico_pause.ico
+	Pause ,Toggle
+	Goto, run
 
 ;;--- Quit (escape , esc) ---
 
