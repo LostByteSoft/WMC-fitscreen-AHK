@@ -121,14 +121,14 @@
 	Menu, tray, Disable, --= Hotkeys =--
 	Menu, tray, Add, Pause (Toggle) Hotkey's = 0, pause
 	Menu, tray, Icon, Pause (Toggle) Hotkey's = 0, ico_HotKeys.ico
-	Menu, tray, Add, Hotkey: F2 Monitor 1 = 0, ButtonScreen_1
-	Menu, tray, Icon, Hotkey: F2 Monitor 1 = 0, ico_1.ico
-	Menu, tray, Add, Hotkey: F3 Monitor 2 = 0, ButtonScreen_2
-	Menu, tray, Icon, Hotkey: F3 Monitor 2 = 0, ico_2.ico
-	Menu, tray, Add, Hotkey: F4 Monitor 3 = 0, ButtonScreen_3
-	Menu, tray, Icon, Hotkey: F4 Monitor 3 = 0, ico_3.ico
-	Menu, tray, Add, Hotkey: F5 Minimize wmc = 0, minimize
-	Menu, tray, Icon, Hotkey: F5 Minimize wmc = 0, ico_minimize.ico, 1
+	Menu, tray, Add, Hotkey: F2 Monitor 1, ButtonScreen_1
+	Menu, tray, Icon, Hotkey: F2 Monitor 1, ico_1.ico
+	Menu, tray, Add, Hotkey: F3 Monitor 2, ButtonScreen_2
+	Menu, tray, Icon, Hotkey: F3 Monitor 2, ico_2.ico
+	Menu, tray, Add, Hotkey: F4 Monitor 3, ButtonScreen_3
+	Menu, tray, Icon, Hotkey: F4 Monitor 3, ico_3.ico
+	Menu, tray, Add, Hotkey: F5 Minimize wmc, minimize
+	Menu, tray, Icon, Hotkey: F5 Minimize wmc, ico_minimize.ico, 1
 	Menu, tray, add, Hotkey: F7 - Move, mousesend
 	Menu, Tray, Icon, Hotkey: F7 - Move, ico_wmc.ico, 1
 	Menu, tray, add, Hotkey: F8 - Mute, mute
@@ -152,11 +152,6 @@
 	Menu, Tray, Tip, Windows Media Center FitScreen
 
 ;;--- Software start here ---
-
-	IfEqual, hotkeyf2, 1, Menu, Tray, Rename, Hotkey: F2 Monitor 1 = 0, Hotkey: F2 Monitor 1 = 1
-	IfEqual, hotkeyf3, 1, Menu, Tray, Rename, Hotkey: F3 Monitor 2 = 0, Hotkey: F3 Monitor 2 = 1
-	IfEqual, hotkeyf4, 1, Menu, Tray, Rename, Hotkey: F4 Monitor 3 = 0, Hotkey: F4 Monitor 3 = 1
-	IfEqual, hotkeyf5, 1, Menu, Tray, Rename, Hotkey: F5 Minimize wmc = 0, Hotkey: F5 Minimize wmc = 1
 
 	IfEqual, Monitorcount, 1, IniWrite, 1, WMC fitscreen.ini, options, gotomon
 	IfEqual, fullscreen , 1, SetEnv, fullscreenstart, /directmedia:general
