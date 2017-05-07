@@ -10,7 +10,7 @@
 
 	SetEnv, title, WMC F4 move to monitor 3
 	SetEnv, mode, Fit Screen : HotKey F4
-	SetEnv, version, Version 2017-05-05
+	SetEnv, version, Version 2017-05-06
 	SetEnv, Author, LostByteSoft
 
 ;;--- Softwares options ---
@@ -18,13 +18,7 @@
 	SetWorkingDir, %A_ScriptDir%
 	#SingleInstance Force
 	#Persistent
-
-	FileInstall, ico_shut.ico, ico_shut.ico, 0
-	FileInstall, ico_about.ico, ico_about.ico, 0
-	FileInstall, ico_3.ico, ico_3.ico, 0
-	FileInstall, ico_wmc.ico, ico_wmc.ico, 0
-	FileInstall, ico_HotKeys.ico, ico_HotKeys.ico, 0
-	FileInstall, ico_pause.ico, ico_pause.ico, 0
+	#NoEnv
 
 ;;--- Menu Tray options ---
 
@@ -34,15 +28,8 @@
 	Menu, tray, add
 	Menu, tray, add, Exit, GuiClose2
 	Menu, Tray, Icon, Exit, ico_shut.ico
-	Menu, tray, add, Pause/Toggle FitScreen, pause				; pause
-	Menu, Tray, Icon, Pause/Toggle FitScreen, ico_pause.ico
 	Menu, tray, add, Deactivate HotKey, Deactivate
 	Menu, Tray, Icon, Deactivate HotKey, ico_3.ico
-	Menu, tray, add
-	Menu, tray, add, About - LostByteSoft, about
-	Menu, Tray, Icon, About - LostByteSoft, ico_about.ico, 1
-	Menu, tray, add, %Version% , version
-	Menu, Tray, Icon, %Version%, ico_about.ico, 1
 	Menu, tray, add
 	Menu, tray, add, Hotkey: F4 Monitor 3, run2
 	Menu, Tray, Icon, Hotkey: F4 Monitor 3, ico_HotKeys.ico
@@ -50,38 +37,41 @@
 
 ;;--- Software start here ---
 
+start:
 run:
 	Menu, Tray, Icon, ico_3.ico
 	KeyWait, F4, D
 	run2:
+	IniRead, pausekey, WMC fitscreen.ini, options, pausekey
+	IfEqual, pausekey, 1, Goto, msgtip
 	SysGet, MonitorCount, MonitorCount
+	IfEqual, MonitorCOunt, 1, goto, onlyonemonitor
 	SysGet, MonitorPrimary, MonitorPrimary
 	SysGet, Mon1, Monitor, 1
 	SysGet, Mon2, Monitor, 2
 	SysGet, Mon3, Monitor, 3
-	IfEqual, MonitorCOunt, 1, goto, onlyonemonitor
 	SetEnv, gotomon, 3
 	IniWrite, 3, WMC fitscreen.ini, options, gotomon
 	IfWinExist, Windows Media Center,, goto, move
-	goto, run
-	WinActivate, Windows Media Center
+	Goto, Run
 
 move:
-	Menu, Tray, Icon, ico_loading.ico
+	Menu, Tray, Icon, ico_yellow.ico
 	IniRead, gotomon, WMC fitscreen.ini, options, gotomon
 	IfEqual, Mon1Bottom , 768, goto, 768
 	IfEqual, Mon1Bottom , 900, goto, 900
 	IfEqual, Mon1Bottom , 1050, goto, 1050
 	IfEqual, Mon1Bottom , 1080, goto, 1080
-	;MsgBox, You screen is not supported. Goto Default values. It could be not best adjust. (Blocked to move)
+	;MsgBox, You screen is not supported. Goto Default values. It could be not best adjust. (Fail to detect resolution)
 	goto, Default
 
 768:
-	IfEqual, gotomon ,2 , Goto, mon2-768
-	IfEqual, gotomon ,3 , Goto, mon3-768
+	IfEqual, gotomon, 2, Goto, mon2-768
+	IfEqual, gotomon, 3, Goto, mon3-768
 	WinMove, Windows Media Center, , 50, 0 , 1246
 	WinActivate, Windows Media Center
 	Goto, Run
+
 	mon2-768:
 	IfEqual, Mon2Bottom , 900, goto, mon2-900
 	IfEqual, Mon2Bottom , 1050, goto, mon2-1050
@@ -91,6 +81,7 @@ move:
 	WinMove, Windows Media Center, , %Mon2Left%, 0 , 1246
 	WinActivate, Windows Media Center
 	Goto, Run
+
 	mon3-768:
 	IfEqual, Mon3Bottom , 900, goto, mon3-900
 	IfEqual, Mon3Bottom , 1050, goto, mon3-1050
@@ -107,6 +98,7 @@ move:
 	WinMove, Windows Media Center, , 60, 0 , 1480
 	WinActivate, Windows Media Center
 	Goto, Run
+
 	mon2-900:
 	IfEqual, Mon2Bottom , 768, goto, mon2-768
 	IfEqual, Mon2Bottom , 1050, goto, mon2-1050
@@ -116,10 +108,11 @@ move:
 	WinMove, Windows Media Center, , %Mon2Left%, 0 , 1480
 	WinActivate, Windows Media Center
 	Goto, Run
+
 	mon3-900:
-	IfEqual, Mon2Bottom , 768, goto, mon3-768
-	IfEqual, Mon2Bottom , 1050, goto, mon3-1050
-	IfEqual, Mon2Bottom , 1080, goto, mon3-1080
+	IfEqual, Mon3Bottom , 768, goto, mon3-768
+	IfEqual, Mon3Bottom , 1050, goto, mon3-1050
+	IfEqual, Mon3Bottom , 1080, goto, mon3-1080
 	Menu, Tray, Icon, ico_green.ico
 	WinMove, Windows Media Center, , %Mon3Left%, 0 , 1480
 	WinMove, Windows Media Center, , %Mon3Left%, 0 , 1480
@@ -132,6 +125,7 @@ move:
 	WinMove, Windows Media Center, , 0, 19 , 1680
 	WinActivate, Windows Media Center
 	Goto, Run
+
 	mon2-1050:
 	IfEqual, Mon2Bottom , 768, goto, mon2-768
 	IfEqual, Mon2Bottom , 900, goto, mon2-900
@@ -141,10 +135,11 @@ move:
 	WinMove, Windows Media Center, , %Mon2Left%, 33 , 1680
 	WinActivate, Windows Media Center
 	Goto, Run
+
 	mon3-1050:
-	IfEqual, Mon2Bottom , 768, goto, mon3-768
-	IfEqual, Mon2Bottom , 900, goto, mon3-900
-	IfEqual, Mon2Bottom , 1080, goto, mon3-1080
+	IfEqual, Mon3Bottom , 768, goto, mon3-768
+	IfEqual, Mon3Bottom , 900, goto, mon3-900
+	IfEqual, Mon3Bottom , 1080, goto, mon3-1080
 	Menu, Tray, Icon, ico_green.ico
 	WinMove, Windows Media Center, , %Mon3Left%, 33 , 1680
 	WinMove, Windows Media Center, , %Mon3Left%, 33 , 1680
@@ -157,6 +152,7 @@ move:
 	WinMove, Windows Media Center, , 52, 0 , 1800
 	WinActivate, Windows Media Center
 	Goto, Run
+
 	mon2-1080:
 	IfEqual, Mon2Bottom , 768, goto, mon2-768
 	IfEqual, Mon2Bottom , 900, goto, mon2-900
@@ -171,10 +167,11 @@ move:
 	WinMove, Windows Media Center,, %1920x%, 0 , 1855,
 	WinActivate, Windows Media Center
 	Goto, Run
+
 	mon3-1080:
-	IfEqual, Mon2Bottom , 768, goto, mon3-768
-	IfEqual, Mon2Bottom , 900, goto, mon3-900
-	IfEqual, Mon2Bottom , 1050, goto, mon3-1050
+	IfEqual, Mon3Bottom , 768, goto, mon3-768
+	IfEqual, Mon3Bottom , 900, goto, mon3-900
+	IfEqual, Mon3Bottom , 1050, goto, mon3-1050
 	Menu, Tray, Icon, ico_green.ico
 	;; msgbox, Ecran 2 -- mon2Left=%Mon2Left% -- Top=%Mon2Top% -- Right=%Mon2Right% -- Bottom=%Mon2Bottom% -- gotomon=%gotomon% -- 1920x=%1920x%
 	;; WinMove, Windows Media Center, , %Mon2Left%, 0 , 1800
@@ -196,23 +193,10 @@ Default:
 	var3 -= var4
 	;;Msgbox x25 y25 w%Var1% h%Var3% Visual NEW position (ESC exit) (OK continue)
 	sleep, 500
-	Menu, Tray, Icon, ico_green.ico
+	Menu, Tray, Icon, ico_yellow.ico
 	WinMove, Windows Media Center, , 50, 50 , %Var1%, ;;%Var3%
 	WinActivate, Windows Media Center
 	Goto, Run
-
-onlyonemonitor:
-	MsgBox, 0, WMC FitScreen, You only have one monitor. You could not change this setting. %title% %mode% (Time out 10 sec.), 10
-	Goto, run
-
-Deactivate:
-	IniWrite, 0, WMC fitscreen.ini, options, hotkeyf4
-	Goto, ExitApp
-
-pause:
-	Menu, Tray, Icon, ico_pause.ico
-	Pause ,Toggle
-	Goto, run
 
 ;;--- Quit (escape , esc) ---
 
@@ -221,6 +205,18 @@ GuiClose2:
 	ExitApp
 
 ;;--- Tray Bar (must be at end of file) ---
+
+msgtip:
+	TrayTip, %title%, HotKey deactivated., 1, 1
+	Goto, Start
+
+onlyonemonitor:
+	MsgBox, 0, WMC FitScreen, You only have one monitor. You could not change this setting. %title% %mode% (Time out 10 sec.), 10
+	Goto, run
+
+Deactivate:
+	IniWrite, 0, WMC fitscreen.ini, options, hotkeyf4
+	Goto, ExitApp
 
 about:
 	TrayTip, %title%, %mode% by %author%, 2, 1

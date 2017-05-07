@@ -10,7 +10,7 @@
 
 	SetEnv, title, WMC F5 Minimize
 	SetEnv, mode, Hotkey : F5 minimize only if activated
-	SetEnv, version, Version 2017-05-06
+	SetEnv, version, Version 2017-05-07
 	SetEnv, Author, LostByteSoft
 
 ;;--- Softwares options ---
@@ -21,15 +21,6 @@
 	#NoEnv
 	SetTitleMatchMode, 2
 
-	FileInstall, ico_shut.ico, ico_shut.ico, 0
-	FileInstall, ico_about.ico, ico_about.ico, 0
-	FileInstall, ico_1.ico, ico_1.ico, 0
-	FileInstall, ico_2.ico, ico_2.ico, 0
-	FileInstall, ico_wmc.ico, ico_wmc.ico, 0
-	FileInstall, ico_HotKeys.ico, ico_HotKeys.ico
-	FileInstall, ico_minimize.ico, ico_minimize.ico
-	FileInstall, ico_pause.ico, ico_pause.ico, 0
-
 ;;--- Menu Tray options ---
 
 	Menu, Tray, NoStandard
@@ -38,30 +29,26 @@
 	Menu, tray, add
 	Menu, tray, add, Exit, ExitApp
 	Menu, Tray, Icon, Exit, ico_shut.ico
-	Menu, tray, add, Pause/Toggle FitScreen, pause				; pause
-	Menu, Tray, Icon, Pause/Toggle FitScreen, ico_pause.ico
 	Menu, tray, add, Deactivate HotKey, Deactivate
 	Menu, Tray, Icon, Deactivate HotKey, ico_minimize.ico
 	Menu, tray, add
-	Menu, tray, add, About - LostByteSoft, about
-	Menu, Tray, Icon, About - LostByteSoft, ico_about.ico, 1
-	Menu, tray, add, %Version% , version
-	Menu, Tray, Icon, %Version%, ico_about.ico, 1
-	Menu, tray, add
-	Menu, tray, add, Hotkey: F5 MiniMize, hotkeyf5
+	Menu, tray, add, Hotkey: F5 MiniMize, minimize
 	Menu, Tray, Icon, Hotkey: F5 MiniMize, ico_HotKeys.ico, 1
 	Menu, Tray, Tip, %title%
 
 ;;--- Software start here ---
 
 start:
+	Menu, Tray, Icon, ico_minimize.ico
 	KeyWait, F5, D
 	WinGetTitle, OutputVar, A
 	Ifequal, OutputVar, Windows Media Center, Goto, minimize
 	Goto, Start
 
 minimize:
-	hotkeyf5:
+	IniRead, pausekey, WMC fitscreen.ini, options, pausekey
+	IfEqual, pausekey, 1, Goto, msgtip
+	;MsgBox, pausekey=%pausekey% OutputVar=%OutputVar%
 	WinMinimize, Windows Media Center
 	Sleep, 1000
 	goto, start
@@ -70,15 +57,16 @@ Deactivate:
 	IniWrite, 0, WMC fitscreen.ini, options, hotkeyf5
 	Goto, ExitApp
 
-pause:
-	Menu, Tray, Icon, ico_pause.ico
-	Pause ,Toggle
-	Goto, start
+msgtip:
+	TrayTip, %title%, HotKey deactivated., 1, 1
+	Goto, Start
 
 ;;--- Quit (escape , esc) ---
 
 ExitApp:
 	ExitApp
+
+;;--- Tray Bar (must be at end of file) ---
 
 about:
 	TrayTip, %title%, %mode% by %author%, 2, 1
