@@ -17,7 +17,7 @@
 
 	SetEnv, title, WMC FitScreen
 	SetEnv, mode, WMC Best Fit Screen : F7
-	SetEnv, version, Version 2017-05-09
+	SetEnv, version, Version 2017-05-10
 	SetEnv, Author, LostByteSoft
 
 ;;--- Softwares options ---
@@ -25,7 +25,7 @@
 	SetWorkingDir, %A_ScriptDir%
 	#SingleInstance Force
 	#Persistent
-	;#NoEnv			; Cause BUG to determine if WMC is installed or not
+	;; #NoEnv					; Cause error to determine if WMC is installed or not
 	SetTitleMatchMode, Slow
 	SetTitleMatchMode, 2
 	t_UpTime := A_TickCount // 1000			; Elapsed seconds since start if uptime upper (Var timer specified in WMC fitscreen.ini) sec start imediately
@@ -160,7 +160,8 @@
 	IfEqual, hotkeyf3, 1, Run, "wmc_monitor2.exe"
 	IfEqual, hotkeyf4, 1, Run, "wmc_monitor3.exe"
 	IfEqual, hotkeyf5, 1, Run, "wmc_minimize.exe"
-	;TrayTip, %title%, I'm almost ready..., 1, 1
+	IfEqual, pausekey, 1, Menu, Tray, Rename, Pause (Toggle) Hotkey's = 0ff, Pause (Toggle) Hotkey's = On
+	IfEqual, pausekey, 1, Menu, Tray, Icon, Pause (Toggle) Hotkey's = On, ico_pause.ico
 	IfWinExist, Windows Media Center,, goto, move
 	goto, start
 
@@ -331,17 +332,16 @@ move:
 	Goto, Run
 
 Default:
-	;;MsgBox, Ecran 1 Left: %Mon1Left% -- Top: %Mon1Top% -- Right: %Mon1Right% -- Bottom %Mon1Bottom%... Default
+	;; MsgBox, Ecran 1 Left: %Mon1Left% -- Top: %Mon1Top% -- Right: %Mon1Right% -- Bottom %Mon1Bottom%... Default
 	SetEnv, Var1, %Mon1Right%
 	SetEnv, Var2, 100
 	var1 -= var2
 	SetEnv, Var3, %Mon1Bottom%
 	SetEnv, Var4, 100			;; -40 win bar +-20 i don't know why
 	var3 -= var4
-	;;Msgbox x25 y25 w%Var1% h%Var3% Visual NEW position (ESC exit) (OK continue)
+	;; Msgbox x25 y25 w%Var1% h%Var3% Visual NEW position (ESC exit) (OK continue)
 	sleep, 500
-	Menu, Tray, Icon, ico_yellow.ico
-	WinMove, Windows Media Center, , 50, 50 , %Var1%, ;;%Var3%
+	WinMove, Windows Media Center, , 50, 50 , %Var1%, ;; %Var3%
 	WinActivate, Windows Media Center
 	Goto, Run
 
@@ -471,8 +471,8 @@ pause:
 	Menu, Tray, Icon, ico_yellow.ico
 	IfEqual, pausekey, 1, goto, unpause
 	IniWrite, 1, WMC fitscreen.ini, options, pausekey
+	Menu, Tray, Icon, ico_green_pause.ico
 	Menu, Tray, Rename, Pause (Toggle) Hotkey's = 0ff, Pause (Toggle) Hotkey's = On
-	Menu, Tray, Icon, ico_pause.ico
 	Menu, Tray, Icon, Pause (Toggle) Hotkey's = On, ico_pause.ico
 	SetEnv, pausekey, 1
 	Goto, Run
@@ -481,7 +481,7 @@ pause:
 	Menu, Tray, Icon, Pause (Toggle) Hotkey's = On, ico_HotKeys.ico
 	IniWrite, 0, WMC fitscreen.ini, options, pausekey
 	Menu, Tray, Rename, Pause (Toggle) Hotkey's = On, Pause (Toggle) Hotkey's = 0ff
-	Menu, Tray, Icon, ico_HotKeys.ico
+	Menu, Tray, Icon, ico_green.ico
 	SetEnv, pausekey, 0
 	Goto, Run
 
@@ -509,10 +509,12 @@ secret:
 	SysGet, Mon3, Monitor, 3
 	IfEqual, fullscreen , 1, SetEnv, fullscreenstart2, /directmedia:general
 	IfEqual, fullscreen , 0, SetEnv, fullscreenstart, (disabled)
-	MsgBox, 0, WMC Fit Screen, title=%title% mode=%mode% version=%version% author=%author%`n`nt_UpTime=%t_UpTime% Hotkey= F7=1 F2=%hotkeyf2% F3=%hotkeyf3% F4=%hotkeyf4% F5=%hotkeyf5% A_WorkingDir=%A_WorkingDir%`n`nautorun=%autorun% timer=%timer% minimize=%minimize% fullscreen=%fullscreen% fullscreenstart=%fullscreenstart%`n`nstart=%start% %fullscreenstar2t%`n`ngotomon=%gotomon% MonitorCount=%MonitorCount% MonitorPrimary=%MonitorPrimary%`n`nMon 1 Left: %Mon1Left% -- Top: %Mon1Top% -- Right: %Mon1Right% -- Bottom %Mon1Bottom%.`n`nMon2 Left: %Mon2Left% -- Top: %Mon2Top% -- Right: %Mon2Right% -- Bottom %Mon2Bottom%.`n`nMon3 Left: %Mon3Left% -- Top: %Mon3Top% -- Right: %Mon3Right% -- Bottom %Mon3Bottom%.
+	MsgBox, 0, WMC Fit Screen, title=%title% mode=%mode% version=%version% author=%author% t_UpTime=%t_UpTime% A_WorkingDir=%A_WorkingDir%`n`nHotkey= F7=1 F2=%hotkeyf2% F3=%hotkeyf3% F4=%hotkeyf4% F5=%hotkeyf5%`n`nautorun=%autorun% timer=%timer% minimize=%minimize% fullscreen=%fullscreen% fullscreenstart=%fullscreenstart%`n`nstart=%start% %fullscreenstar2t%`n`ngotomon=%gotomon% MonitorCount=%MonitorCount% MonitorPrimary=%MonitorPrimary%`n`nMon 1 Left: %Mon1Left% -- Top: %Mon1Top% -- Right: %Mon1Right% -- Bottom %Mon1Bottom%.`n`nMon 2 Left: %Mon2Left% -- Top: %Mon2Top% -- Right: %Mon2Right% -- Bottom %Mon2Bottom%.`n`nMon 3 Left: %Mon3Left% -- Top: %Mon3Top% -- Right: %Mon3Right% -- Bottom %Mon3Bottom%.
 	IniRead, fullscreen, WMC fitscreen.ini, options, fullscreen
 	IfEqual, fullscreen , 1, SetEnv, fullscreenstart, /directmedia:general
 	IfEqual, fullscreen , 0, SetEnv, fullscreenstart,
+	Menu, Tray, Icon, ico_green.ico
+	IfEqual, pausekey, 1, Menu, Tray, Icon, ico_green_pause.ico
 	Return
 
 fullscreenonoff:
@@ -528,6 +530,8 @@ fullscreenonoff:
 	SetEnv, fullscreen, 1
 	TrayTip, %title%, fullscreen enabled - %fullscreen%, 2, 2
 	Menu, Tray, Rename, Fullscreen On/Off = 0, Fullscreen On/Off = 1
+	Menu, Tray, Icon, ico_green.ico
+	IfEqual, pausekey, 1, Menu, Tray, Icon, ico_green_pause.ico
 	Return
 
 	disablefullscreen:
@@ -536,6 +540,8 @@ fullscreenonoff:
 	SetEnv, fullscreen, 0
 	TrayTip, %title%, fullscreen disabled - %fullscreen%, 2, 2
 	Menu, Tray, Rename, Fullscreen On/Off = 1, Fullscreen On/Off = 0
+	Menu, Tray, Icon, ico_green.ico
+	IfEqual, pausekey, 1, Menu, Tray, Icon, ico_green_pause.ico
 	Return
 
 autorunonoff:
@@ -551,6 +557,8 @@ autorunonoff:
 	SetEnv, autorun, 1
 	TrayTip, %title%, Autorun enabled - %autorun%, 2, 2
 	Menu, Tray, Rename, Autorun On/Off = 0, Autorun On/Off = 1
+	Menu, Tray, Icon, ico_green.ico
+	IfEqual, pausekey, 1, Menu, Tray, Icon, ico_green_pause.ico
 	Return
 
 	disableautorun:
@@ -559,6 +567,8 @@ autorunonoff:
 	SetEnv, autorun, 0
 	TrayTip, %title%, Autorun disabled - %autorun%, 2, 2
 	Menu, Tray, Rename, Autorun On/Off = 1, Autorun On/Off = 0
+	Menu, Tray, Icon, ico_green.ico
+	IfEqual, pausekey, 1, Menu, Tray, Icon, ico_green_pause.ico
 	Return
 
 mousesend:
@@ -567,6 +577,8 @@ mousesend:
 	sleep, 500
 	WinWait, Windows Media Center
 	sleep, 500
+	Menu, Tray, Icon, ico_green.ico
+	IfEqual, pausekey, 1, Menu, Tray, Icon, ico_green_pause.ico
 	goto, move
 
 wmcclose:
@@ -580,12 +592,16 @@ about:
 	Menu, Tray, Icon, ico_yellow.ico
 	TrayTip, %title%, %mode% by %author%, 2, 1
 	Sleep, 500
+	Menu, Tray, Icon, ico_green.ico
+	IfEqual, pausekey, 1, Menu, Tray, Icon, ico_green_pause.ico
 	Return
 
 version:
 	Menu, Tray, Icon, ico_yellow.ico
 	TrayTip, %title%, %version%, 2, 2
 	Sleep, 500
+	Menu, Tray, Icon, ico_green.ico
+	IfEqual, pausekey, 1, Menu, Tray, Icon, ico_green_pause.ico
 	Return
 
 doReload:
@@ -599,6 +615,8 @@ fullscreen:
 	WinActivate, Windows Media Center
 	sleep, 500
 	send, !{enter}
+	Menu, Tray, Icon, ico_green.ico
+	IfEqual, pausekey, 1, Menu, Tray, Icon, ico_green_pause.ico
 	Return
 
 ;;--- End of script ---
