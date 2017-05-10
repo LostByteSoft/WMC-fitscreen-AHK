@@ -17,7 +17,7 @@
 
 	SetEnv, title, WMC FitScreen
 	SetEnv, mode, WMC Best Fit Screen : F7
-	SetEnv, version, Version 2017-05-06
+	SetEnv, version, Version 2017-05-09
 	SetEnv, Author, LostByteSoft
 
 ;;--- Softwares options ---
@@ -119,8 +119,8 @@
 	menu, tray, add, --= Hotkeys =--, about
 	Menu, Tray, Icon, --= Hotkeys =--, ico_HotKeys.ico
 	Menu, tray, Disable, --= Hotkeys =--
-	Menu, tray, Add, Pause (Toggle) Hotkey's = 0, pause
-	Menu, tray, Icon, Pause (Toggle) Hotkey's = 0, ico_HotKeys.ico
+	Menu, tray, Add, Pause (Toggle) Hotkey's = 0ff, pause
+	Menu, tray, Icon, Pause (Toggle) Hotkey's = 0ff, ico_HotKeys.ico
 	Menu, tray, Add, Hotkey: F2 Monitor 1, ButtonScreen_1
 	Menu, tray, Icon, Hotkey: F2 Monitor 1, ico_1.ico
 	Menu, tray, Add, Hotkey: F3 Monitor 2, ButtonScreen_2
@@ -147,7 +147,7 @@
 	Menu, tray, add, WMC Maximize, Maximize					; Maximize
 	Menu, Tray, Icon, WMC Maximize, ico_Maximize.ico, 1
 	menu, tray, add
-	Menu, tray, add, Start / Adjust / F7, mousesend				; Run the script.
+	Menu, tray, add, Start / Adjust / F7, start				; Run the script.
 	Menu, Tray, Icon, Start / Adjust / F7, ico_wmc.ico, 1
 	Menu, Tray, Tip, Windows Media Center FitScreen
 
@@ -160,7 +160,7 @@
 	IfEqual, hotkeyf3, 1, Run, "wmc_monitor2.exe"
 	IfEqual, hotkeyf4, 1, Run, "wmc_monitor3.exe"
 	IfEqual, hotkeyf5, 1, Run, "wmc_minimize.exe"
-	TrayTip, %title%, I'm almost ready..., 1, 1
+	;TrayTip, %title%, I'm almost ready..., 1, 1
 	IfWinExist, Windows Media Center,, goto, move
 	goto, start
 
@@ -471,16 +471,18 @@ pause:
 	Menu, Tray, Icon, ico_yellow.ico
 	IfEqual, pausekey, 1, goto, unpause
 	IniWrite, 1, WMC fitscreen.ini, options, pausekey
+	Menu, Tray, Rename, Pause (Toggle) Hotkey's = 0ff, Pause (Toggle) Hotkey's = On
+	Menu, Tray, Icon, ico_pause.ico
+	Menu, Tray, Icon, Pause (Toggle) Hotkey's = On, ico_pause.ico
 	SetEnv, pausekey, 1
-	Menu, Tray, Rename, Pause (Toggle) Hotkey's = 0, Pause (Toggle) Hotkey's = 1
-	Menu, Tray, Icon, Pause (Toggle) Hotkey's = 1, ico_pause.ico
 	Goto, Run
 
 	unpause:
+	Menu, Tray, Icon, Pause (Toggle) Hotkey's = On, ico_HotKeys.ico
 	IniWrite, 0, WMC fitscreen.ini, options, pausekey
+	Menu, Tray, Rename, Pause (Toggle) Hotkey's = On, Pause (Toggle) Hotkey's = 0ff
+	Menu, Tray, Icon, ico_HotKeys.ico
 	SetEnv, pausekey, 0
-	Menu, Tray, Rename, Pause (Toggle) Hotkey's = 1, Pause (Toggle) Hotkey's = 0
-	Menu, Tray, Icon, Pause (Toggle) Hotkey's = 0, ico_HotKeys.ico
 	Goto, Run
 
 ;;--- Quit (escape , esc) ---
@@ -495,14 +497,22 @@ GuiClose2:
 ;;--- Tray Bar (must be at end of file) ---
 
 secret:
-	Menu, Tray, Icon, ico_green.ico
+	Menu, Tray, Icon, ico_yellow.ico
+	IniRead, hotkeyf2, WMC fitscreen.ini, options, hotkeyf2
+	IniRead, hotkeyf3, WMC fitscreen.ini, options, hotkeyf3
+	IniRead, hotkeyf4, WMC fitscreen.ini, options, hotkeyf4
+	IniRead, hotkeyf5, WMC fitscreen.ini, options, hotkeyf5
+	SysGet, MonitorCount, MonitorCount
+	SysGet, MonitorPrimary, MonitorPrimary
+	SysGet, Mon1, Monitor, 1
+	SysGet, Mon2, Monitor, 2
+	SysGet, Mon3, Monitor, 3
 	IfEqual, fullscreen , 1, SetEnv, fullscreenstart2, /directmedia:general
 	IfEqual, fullscreen , 0, SetEnv, fullscreenstart, (disabled)
-	MsgBox, 0, WMC Fit Screen, title=%title% mode=%mode% version=%version% author=%author%`n`nt_UpTime=%t_UpTime% Hotkey=F7 A_WorkingDir=%A_WorkingDir%`n`nautorun=%autorun% timer=%timer% minimize=%minimize%`n`nstart=%start% %fullscreenstar2t% fullscreen=%fullscreen% fullscreenstart=%fullscreenstart%`n`ngotomon=%gotomon% `n`nresolution1=%Mon1Bottom% resolution2=%Mon2Bottom%
+	MsgBox, 0, WMC Fit Screen, title=%title% mode=%mode% version=%version% author=%author%`n`nt_UpTime=%t_UpTime% Hotkey= F7=1 F2=%hotkeyf2% F3=%hotkeyf3% F4=%hotkeyf4% F5=%hotkeyf5% A_WorkingDir=%A_WorkingDir%`n`nautorun=%autorun% timer=%timer% minimize=%minimize% fullscreen=%fullscreen% fullscreenstart=%fullscreenstart%`n`nstart=%start% %fullscreenstar2t%`n`ngotomon=%gotomon% MonitorCount=%MonitorCount% MonitorPrimary=%MonitorPrimary%`n`nMon 1 Left: %Mon1Left% -- Top: %Mon1Top% -- Right: %Mon1Right% -- Bottom %Mon1Bottom%.`n`nMon2 Left: %Mon2Left% -- Top: %Mon2Top% -- Right: %Mon2Right% -- Bottom %Mon2Bottom%.`n`nMon3 Left: %Mon3Left% -- Top: %Mon3Top% -- Right: %Mon3Right% -- Bottom %Mon3Bottom%.
 	IniRead, fullscreen, WMC fitscreen.ini, options, fullscreen
 	IfEqual, fullscreen , 1, SetEnv, fullscreenstart, /directmedia:general
 	IfEqual, fullscreen , 0, SetEnv, fullscreenstart,
-	Menu, Tray, Icon, ico_yellow.ico
 	Return
 
 fullscreenonoff:
@@ -510,7 +520,6 @@ fullscreenonoff:
 	IfEqual, fullscreen, 1, goto, disablefullscreen
 	IfEqual, fullscreen, 0, goto, enablefullscreen
 	msgbox, error_04 fullscreen error fullscreen=%fullscreen%
-	Menu, Tray, Icon, ico_yellow.ico
 	Return
 
 	enablefullscreen:
@@ -519,7 +528,6 @@ fullscreenonoff:
 	SetEnv, fullscreen, 1
 	TrayTip, %title%, fullscreen enabled - %fullscreen%, 2, 2
 	Menu, Tray, Rename, Fullscreen On/Off = 0, Fullscreen On/Off = 1
-	Menu, Tray, Icon, ico_yellow.ico
 	Return
 
 	disablefullscreen:
@@ -528,7 +536,6 @@ fullscreenonoff:
 	SetEnv, fullscreen, 0
 	TrayTip, %title%, fullscreen disabled - %fullscreen%, 2, 2
 	Menu, Tray, Rename, Fullscreen On/Off = 1, Fullscreen On/Off = 0
-	Menu, Tray, Icon, ico_yellow.ico
 	Return
 
 autorunonoff:
