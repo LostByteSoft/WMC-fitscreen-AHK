@@ -10,7 +10,7 @@
 
 	SetEnv, title, WMC F5 Minimize
 	SetEnv, mode, Hotkey : F5 minimize only if activated
-	SetEnv, version, Version 2017-05-07
+	SetEnv, version, Version 2017-05-12
 	SetEnv, Author, LostByteSoft
 
 ;;--- Softwares options ---
@@ -58,7 +58,8 @@ Deactivate:
 	Goto, ExitApp
 
 msgtip:
-	TrayTip, %title%, HotKey deactivated., 1, 1
+	;TrayTip, %title%, HotKey deactivated., 1, 1
+	sleep, 2000
 	Goto, Start
 
 ;;--- Quit (escape , esc) ---

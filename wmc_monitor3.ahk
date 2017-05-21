@@ -10,7 +10,7 @@
 
 	SetEnv, title, WMC F4 move to monitor 3
 	SetEnv, mode, Fit Screen : HotKey F4
-	SetEnv, version, Version 2017-05-06
+	SetEnv, version, Version 2017-05-12
 	SetEnv, Author, LostByteSoft
 
 ;;--- Softwares options ---
@@ -207,7 +207,8 @@ GuiClose2:
 ;;--- Tray Bar (must be at end of file) ---
 
 msgtip:
-	TrayTip, %title%, HotKey deactivated., 1, 1
+	;TrayTip, %title%, HotKey deactivated., 1, 1
+	sleep, 2000
 	Goto, Start
 
 onlyonemonitor:
