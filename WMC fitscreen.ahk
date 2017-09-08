@@ -12,12 +12,13 @@
 ;;	;; mean unfunctionnal and be never it
 ;;	Windows 7 maybe intermix monitor numbers ; ex: the 2 is primary and 1 is extended. This software not supposed to have unexpected random errors with that.
 ;;	2017-05-05 3 screen supported
+;;	2017-09-08-1759 bug track and modifications
 
 ;;--- Softwares Variables ---
 
 	SetEnv, title, WMC FitScreen
 	SetEnv, mode, WMC Best Fit Screen : F6
-	SetEnv, version, Version 2017-08-09-1738
+	SetEnv, version, Version 2017-09-08-1711
 	SetEnv, Author, LostByteSoft
 
 ;;--- Softwares options ---
@@ -28,48 +29,30 @@
 	;; #NoEnv				; Cause error to determine if WMC is installed or not
 	SetTitleMatchMode, Slow
 	SetTitleMatchMode, 2
-	t_UpTime := A_TickCount // 1000		; Elapsed seconds since start if uptime upper (Var timer specified in WMC fitscreen.ini) sec start imediately
+	t_UpTime := A_TickCount // 1000		; Elapsed seconds since start if uptime upper (Var timer specified in WMC fitscreen.ini) 0 sec start imediately
 
 	FileInstall, WMC fitscreen.ini, WMC fitscreen.ini, 0
-	FileInstall, ico_green.ico, ico_green.ico, 0
-	FileInstall, ico_yellow.ico, ico_yellow.ico, 0
-	FileInstall, ico_red.ico, ico_red.ico, 0
-	FileInstall, ico_reboot.ico, ico_reboot.ico, 0
-	FileInstall, ico_shut.ico, ico_shut.ico, 0
-	FileInstall, ico_wmc.ico, ico_wmc.ico, 0
-	FileInstall, ico_lock.ico, ico_lock.ico, 0
-	FileInstall, ico_about.ico, ico_about.ico, 0
-	FileInstall, ico_full.ico, ico_full.ico, 0
-	FileInstall, ico_monitor.ico, ico_monitor.ico, 0
-	FileInstall, ico_minimize.ico, ico_minimize.ico, 0
-	FileInstall, ico_maximize.ico, ico_maximize.ico, 0
-	FileInstall, ico_mute.ico, ico_mute.ico, 0
-	FileInstall, ico_1.ico, ico_1.ico, 0
-	FileInstall, ico_2.ico, ico_2.ico, 0
-	FileInstall, ico_3.ico, ico_3.ico, 0
-	FileInstall, ico_volume_2.ico, ico_volume_2.ico, 0
-	FileInstall, ico_options.ico, ico_options.ico, 0
-	FileInstall, ico_HotKeys.ico, ico_HotKeys.ico, 0
-	FileInstall, ico_pause.ico, ico_pause.ico, 0
-	FileInstall, ico_green_pause.ico, ico_green_pause.ico, 0
-
-	IniRead, autorun, WMC fitscreen.ini, options, autorun
-	IniRead, timer, WMC fitscreen.ini, options, timer
-	IniRead, start, WMC fitscreen.ini, options, start
-	IniRead, minimize, WMC fitscreen.ini, options, minimize
-	IniRead, fullscreen, WMC fitscreen.ini, options, fullscreen
-	IniRead, hotkeyf2, WMC fitscreen.ini, options, hotkeyf2
-	IniRead, hotkeyf3, WMC fitscreen.ini, options, hotkeyf3
-	IniRead, hotkeyf4, WMC fitscreen.ini, options, hotkeyf4
-	IniRead, hotkeyF6, WMC fitscreen.ini, options, hotkeyF6
-	IniRead, gotomon, WMC fitscreen.ini, options, gotomon
-	IniRead, pausekey, WMC fitscreen.ini, options, pausekey
-
-	SysGet, MonitorCount, MonitorCount
-	SysGet, MonitorPrimary, MonitorPrimary
-	SysGet, Mon1, Monitor, 1
-	SysGet, Mon2, Monitor, 2
-	SysGet, Mon3, Monitor, 3
+	FileInstall, icons\ico_green.ico, ico_green.ico, 0
+	FileInstall, icons\ico_yellow.ico, ico_yellow.ico, 0
+	FileInstall, icons\ico_red.ico, ico_red.ico, 0
+	FileInstall, icons\ico_reboot.ico, ico_reboot.ico, 0
+	FileInstall, icons\ico_shut.ico, ico_shut.ico, 0
+	FileInstall, icons\ico_wmc.ico, ico_wmc.ico, 0
+	FileInstall, icons\ico_lock.ico, ico_lock.ico, 0
+	FileInstall, icons\ico_about.ico, ico_about.ico, 0
+	FileInstall, icons\ico_full.ico, ico_full.ico, 0
+	FileInstall, icons\ico_monitor.ico, ico_monitor.ico, 0
+	FileInstall, icons\ico_minimize.ico, ico_minimize.ico, 0
+	FileInstall, icons\ico_maximize.ico, ico_maximize.ico, 0
+	FileInstall, icons\ico_mute.ico, ico_mute.ico, 0
+	FileInstall, icons\ico_1.ico, ico_1.ico, 0
+	FileInstall, icons\ico_2.ico, ico_2.ico, 0
+	FileInstall, icons\ico_3.ico, ico_3.ico, 0
+	FileInstall, icons\ico_volume_2.ico, ico_volume_2.ico, 0
+	FileInstall, icons\ico_options.ico, ico_options.ico, 0
+	FileInstall, icons\ico_HotKeys.ico, ico_HotKeys.ico, 0
+	FileInstall, icons\ico_pause.ico, ico_pause.ico, 0
+	FileInstall, icons\ico_green_pause.ico, ico_green_pause.ico, 0
 
 ;;--- Menu Tray options ---
 
@@ -128,8 +111,8 @@
 	Menu, tray, Icon, Hotkey: F3 Monitor 2, ico_2.ico
 	Menu, tray, Add, Hotkey: F4 Monitor 3, ButtonScreen_3
 	Menu, tray, Icon, Hotkey: F4 Monitor 3, ico_3.ico
-	Menu, tray, add, Hotkey: F6 Set, mute
-	Menu, Tray, Icon, Hotkey: F6 Set, ico_green.ico, 1
+	Menu, tray, add, Hotkey: F6 Set (replace), mute
+	Menu, Tray, Icon, Hotkey: F6 Set (replace), ico_green.ico, 1
 	Menu, tray, add, Hotkey: F8 - Mute, mute
 	Menu, Tray, Icon, Hotkey: F8 - Mute, ico_volume_2.ico, 1
 	Menu, Tray, Add, Hotkey: F9 - Volume Up, about
@@ -145,22 +128,50 @@
 	Menu, Tray, Icon, WMC minimize, ico_minimize.ico, 1
 	Menu, tray, add, WMC Maximize, Maximize					; Maximize
 	Menu, Tray, Icon, WMC Maximize, ico_Maximize.ico, 1
-	menu, tray, add
+	menu, tray, add,
 	Menu, tray, add, Start / Adjust / F6 / Move, mousestart			; Run the script.
 	Menu, Tray, Icon, Start / Adjust / F6 / Move, ico_wmc.ico, 1
+	menu, tray, add,
 	Menu, Tray, Tip, Windows Media Center : %mode%
 
 ;;--- Software start here ---
 
 	Menu, Tray, Icon, ico_yellow.ico
+
+	IniRead, autorun, WMC fitscreen.ini, options, autorun
+	IniRead, timer, WMC fitscreen.ini, options, timer
+	IniRead, start, WMC fitscreen.ini, options, start
+	IniRead, minimize, WMC fitscreen.ini, options, minimize
+	IniRead, hotkeyf2, WMC fitscreen.ini, options, hotkeyf2
+	IniRead, hotkeyf3, WMC fitscreen.ini, options, hotkeyf3
+	IniRead, hotkeyf4, WMC fitscreen.ini, options, hotkeyf4
+	IniRead, hotkeyF5, WMC fitscreen.ini, options, hotkeyF5
+	IniRead, gotomon, WMC fitscreen.ini, options, gotomon
+	IniRead, pausekey, WMC fitscreen.ini, options, pausekey
+
+	SysGet, MonitorCount, MonitorCount
+	SysGet, MonitorPrimary, MonitorPrimary
+	SysGet, Mon1, Monitor, 1
+	SysGet, Mon2, Monitor, 2
+	SysGet, Mon3, Monitor, 3
+
+	IfEqual, hotkeyf2, 1, Run, "wmc_monitor1.exe"
+	IfEqual, hotkeyf3, 1, Run, "wmc_monitor2.exe"
+	IfEqual, hotkeyf4, 1, Run, "wmc_monitor3.exe"
+	IfEqual, hotkeyF5, 1, Run, "wmc_minimize.exe"
+	IfEqual, Monitorcount, 1, IniWrite, 1, WMC fitscreen.ini, options, gotomon
 	IfEqual, Autorun, 1, Goto, Start
 
 run:
 	Menu, Tray, Icon, ico_green.ico
 	IfEqual, pausekey, 1, Menu, Tray, Icon, ico_green_pause.ico
-	;; msgbox, waiting F6 to be pressed. gotomon=%gotomon% MonitorCount=%MonitorCount%
+
+	;; DEBUG MSG BOX
+	;;MsgBox, title=%title% mode=%mode% version=%version% author=%author% t_UpTime=%t_UpTime% A_WorkingDir=%A_WorkingDir%`n`nHotkey= F6=1 F2=%hotkeyf2% F3=%hotkeyf3% F4=%hotkeyf4% F5=%hotkeyF5%`n`nautorun=%autorun% timer=%timer% minimize=%minimize%`n`nstart=%start% %fullscreenstar2t%`n`ngotomon=%gotomon% MonitorCount=%MonitorCount% MonitorPrimary=%MonitorPrimary%`n`nMon 1 Left: %Mon1Left% -- Top: %Mon1Top% -- Right: %Mon1Right% -- Bottom %Mon1Bottom%.`n`nMon 2 Left: %Mon2Left% -- Top: %Mon2Top% -- Right: %Mon2Right% -- Bottom %Mon2Bottom%.`n`nMon 3 Left: %Mon3Left% -- Top: %Mon3Top% -- Right: %Mon3Right% -- Bottom %Mon3Bottom%.
+
 	KeyWait, F6, D
 	Menu, Tray, Icon, ico_red.ico
+	IfNotExist, %windir%\ehome\ehshell.exe, Goto, error_03
 	IfWinExist, Windows Media Center,, goto, move
 	run, "%windir%\ehome\ehshell.exe" %start%
 	sleep, 1000
@@ -170,11 +181,6 @@ run:
 
 start:
 	Menu, Tray, Icon, ico_yellow.ico
-	IfEqual, Monitorcount, 1, IniWrite, 1, WMC fitscreen.ini, options, gotomon
-	IfEqual, hotkeyf2, 1, Run, "wmc_monitor1.exe"
-	IfEqual, hotkeyf3, 1, Run, "wmc_monitor2.exe"
-	IfEqual, hotkeyf4, 1, Run, "wmc_monitor3.exe"
-	IfEqual, hotkeyF6, 1, Run, "wmc_minimize.exe"
 	IfEqual, pausekey, 1, Menu, Tray, Rename, Pause (Toggle) Hotkey's = 0ff, Pause (Toggle) Hotkey's = On
 	IfEqual, pausekey, 1, Menu, Tray, Icon, Pause (Toggle) Hotkey's = On, ico_pause.ico
 	IfWinExist, Windows Media Center,, goto, move
@@ -199,13 +205,17 @@ start:
 	else
 		{
 			Menu, Tray, Icon, ico_yellow.ico
-			MsgBox, WMC not installed.
+			MsgBox, ERROR_01 WMC not installed. (Install WMC)
 			goto, GuiClose2
 		}
 
 mousestart:
 	SetEnv, jump, 1
 	Goto, start
+
+error_03:
+	MsgBox, ERROR_03 WMC not installed. (Install WMC)
+	goto, GuiClose2
 
 move:
 	Menu, Tray, Icon, ico_yellow.ico
@@ -214,7 +224,7 @@ move:
 	IfEqual, Mon1Bottom , 900, goto, 900
 	IfEqual, Mon1Bottom , 1050, goto, 1050
 	IfEqual, Mon1Bottom , 1080, goto, 1080
-	;MsgBox, You screen is not supported. Goto Default values. It could be not best adjust. (Fail to detect resolution)
+	MsgBox, ERROR_02 You screen is not supported. Goto Default values. It could be not best adjust. (Fail to detect resolution)
 	goto, Default
 
 768:
@@ -504,14 +514,13 @@ secret:
 	IniRead, hotkeyf2, WMC fitscreen.ini, options, hotkeyf2
 	IniRead, hotkeyf3, WMC fitscreen.ini, options, hotkeyf3
 	IniRead, hotkeyf4, WMC fitscreen.ini, options, hotkeyf4
-	IniRead, hotkeyF6, WMC fitscreen.ini, options, hotkeyF6
+	IniRead, hotkeyF5, WMC fitscreen.ini, options, hotkeyF5
 	SysGet, MonitorCount, MonitorCount
 	SysGet, MonitorPrimary, MonitorPrimary
 	SysGet, Mon1, Monitor, 1
 	SysGet, Mon2, Monitor, 2
 	SysGet, Mon3, Monitor, 3
-	MsgBox, 0, WMC Fit Screen, title=%title% mode=%mode% version=%version% author=%author% t_UpTime=%t_UpTime% A_WorkingDir=%A_WorkingDir%`n`nHotkey= F6=1 F2=%hotkeyf2% F3=%hotkeyf3% F4=%hotkeyf4% F6=%hotkeyF6%`n`nautorun=%autorun% timer=%timer% minimize=%minimize% fullscreen=%fullscreen% fullscreenstart=%fullscreenstart%`n`nstart=%start% %fullscreenstar2t%`n`ngotomon=%gotomon% MonitorCount=%MonitorCount% MonitorPrimary=%MonitorPrimary%`n`nMon 1 Left: %Mon1Left% -- Top: %Mon1Top% -- Right: %Mon1Right% -- Bottom %Mon1Bottom%.`n`nMon 2 Left: %Mon2Left% -- Top: %Mon2Top% -- Right: %Mon2Right% -- Bottom %Mon2Bottom%.`n`nMon 3 Left: %Mon3Left% -- Top: %Mon3Top% -- Right: %Mon3Right% -- Bottom %Mon3Bottom%.
-	IniRead, fullscreen, WMC fitscreen.ini, options, fullscreen
+	MsgBox, 0, WMC Fit Screen, title=%title% mode=%mode% version=%version% author=%author% t_UpTime=%t_UpTime% A_WorkingDir=%A_WorkingDir%`n`nHotkey= F6=1 F2=%hotkeyf2% F3=%hotkeyf3% F4=%hotkeyf4% F5=%hotkeyF5%`n`nautorun=%autorun% timer=%timer% minimize=%minimize%`n`nstart=%start% %fullscreenstar2t%`n`ngotomon=%gotomon% MonitorCount=%MonitorCount% MonitorPrimary=%MonitorPrimary%`n`nMon 1 Left: %Mon1Left% -- Top: %Mon1Top% -- Right: %Mon1Right% -- Bottom %Mon1Bottom%.`n`nMon 2 Left: %Mon2Left% -- Top: %Mon2Top% -- Right: %Mon2Right% -- Bottom %Mon2Bottom%.`n`nMon 3 Left: %Mon3Left% -- Top: %Mon3Top% -- Right: %Mon3Right% -- Bottom %Mon3Bottom%.
 	Menu, Tray, Icon, ico_green.ico
 	IfEqual, pausekey, 1, Menu, Tray, Icon, ico_green_pause.ico
 	Return
@@ -545,7 +554,7 @@ autorunonoff:
 
 mousesend:
 	Menu, Tray, Icon, ico_red.ico
-	run, "%windir%\ehome\ehshell.exe" %start% %fullscreenstart%
+	run, "%windir%\ehome\ehshell.exe" %start%
 	sleep, 500
 	WinWait, Windows Media Center
 	sleep, 500
