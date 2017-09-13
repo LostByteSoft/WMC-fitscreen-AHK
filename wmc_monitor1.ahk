@@ -68,6 +68,8 @@ move:
 	IfEqual, gotomon, 2, Goto, mon2-768
 	IfEqual, gotomon, 3, Goto, mon3-768
 	WinMove, Windows Media Center, , 50, 0 , 1246
+	Sleep, 500
+	WinMove, Windows Media Center, , 50, 0 , 1246
 	WinActivate, Windows Media Center
 	Goto, Run
 
@@ -75,9 +77,11 @@ move:
 	IfEqual, Mon2Bottom , 900, goto, mon2-900
 	IfEqual, Mon2Bottom , 1050, goto, mon2-1050
 	IfEqual, Mon2Bottom , 1080, goto, mon2-1080
-	Menu, Tray, Icon, ico_green.ico
-	WinMove, Windows Media Center, , %Mon2Left%, 0 , 1246
-	WinMove, Windows Media Center, , %Mon2Left%, 0 , 1246
+	SetEnv, Mon2Left1, %Mon2Left%
+	EnvAdd, Mon2Left1, 20
+	WinMove, Windows Media Center, , %Mon2Left1%, 0 , 1317
+	sleep, 500
+	WinMove, Windows Media Center, , %Mon2Left1%, 0 , 1317
 	WinActivate, Windows Media Center
 	Goto, Run
 
@@ -85,16 +89,19 @@ move:
 	IfEqual, Mon3Bottom , 900, goto, mon3-900
 	IfEqual, Mon3Bottom , 1050, goto, mon3-1050
 	IfEqual, Mon3Bottom , 1080, goto, mon3-1080
-	Menu, Tray, Icon, ico_green.ico
-	WinMove, Windows Media Center, , %Mon3Left%, 0 , 1246
-	WinMove, Windows Media Center, , %Mon3Left%, 0 , 1246
+	SetEnv, Mon3Left1, %Mon3Left%
+	EnvAdd, Mon3Left1, 20
+	WinMove, Windows Media Center, , %Mon3Left1%, 0 , 1317
+	sleep, 500
+	WinMove, Windows Media Center, , %Mon3Left1%, 0 , 1317
 	WinActivate, Windows Media Center
 	Goto, Run
-
 900:
 	IfEqual, gotomon ,2 , Goto, mon2-900
 	IfEqual, gotomon ,3 , Goto, mon3-900
-	WinMove, Windows Media Center, , 60, 0 , 1480
+	WinMove, Windows Media Center, , 100, 0 , 1550
+	sleep, 500
+	WinMove, Windows Media Center, , 100, 0 , 1550
 	WinActivate, Windows Media Center
 	Goto, Run
 
@@ -102,9 +109,11 @@ move:
 	IfEqual, Mon2Bottom , 768, goto, mon2-768
 	IfEqual, Mon2Bottom , 1050, goto, mon2-1050
 	IfEqual, Mon2Bottom , 1080, goto, mon2-1080
-	Menu, Tray, Icon, ico_green.ico
-	WinMove, Windows Media Center, , %Mon2Left%, 0 , 1480
-	WinMove, Windows Media Center, , %Mon2Left%, 0 , 1480
+	SetEnv, Mon2Left1, %Mon2Left%
+	EnvAdd, Mon2Left1, 30
+	WinMove, Windows Media Center, , %Mon2Left1%, 0 , 1570
+	sleep, 500
+	WinMove, Windows Media Center, , %Mon2Left1%, 0 , 1570
 	WinActivate, Windows Media Center
 	Goto, Run
 
@@ -112,15 +121,19 @@ move:
 	IfEqual, Mon3Bottom , 768, goto, mon3-768
 	IfEqual, Mon3Bottom , 1050, goto, mon3-1050
 	IfEqual, Mon3Bottom , 1080, goto, mon3-1080
-	Menu, Tray, Icon, ico_green.ico
-	WinMove, Windows Media Center, , %Mon3Left%, 0 , 1480
-	WinMove, Windows Media Center, , %Mon3Left%, 0 , 1480
+	SetEnv, Mon3Left1, %Mon3Left%
+	EnvAdd, Mon3Left1, 30
+	WinMove, Windows Media Center, , %Mon3Left1%, 0 , 1570
+	sleep, 500
+	WinMove, Windows Media Center, , %Mon3Left1%, 0 , 1570
 	WinActivate, Windows Media Center
 	Goto, Run
 
 1050:
 	IfEqual, gotomon ,2 , Goto, mon2-1050
 	IfEqual, gotomon ,3 , Goto, mon3-1050
+	WinMove, Windows Media Center, , 0, 19 , 1680
+	sleep, 500
 	WinMove, Windows Media Center, , 0, 19 , 1680
 	WinActivate, Windows Media Center
 	Goto, Run
@@ -129,9 +142,9 @@ move:
 	IfEqual, Mon2Bottom , 768, goto, mon2-768
 	IfEqual, Mon2Bottom , 900, goto, mon2-900
 	IfEqual, Mon2Bottom , 1080, goto, mon2-1080
-	Menu, Tray, Icon, ico_green.ico
-	WinMove, Windows Media Center, , %Mon2Left%, 33 , 1680
-	WinMove, Windows Media Center, , %Mon2Left%, 33 , 1680
+	WinMove, Windows Media Center, , %Mon2Left%, 40 , 1680
+	sleep, 500
+	WinMove, Windows Media Center, , %Mon2Left%, 40 , 1680
 	WinActivate, Windows Media Center
 	Goto, Run
 
@@ -139,15 +152,17 @@ move:
 	IfEqual, Mon3Bottom , 768, goto, mon3-768
 	IfEqual, Mon3Bottom , 900, goto, mon3-900
 	IfEqual, Mon3Bottom , 1080, goto, mon3-1080
-	Menu, Tray, Icon, ico_green.ico
-	WinMove, Windows Media Center, , %Mon3Left%, 33 , 1680
-	WinMove, Windows Media Center, , %Mon3Left%, 33 , 1680
+	WinMove, Windows Media Center, , %Mon3Left%, 40 , 1680
+	sleep, 500
+	WinMove, Windows Media Center, , %Mon3Left%, 40 , 1680
 	WinActivate, Windows Media Center
 	Goto, Run
 
 1080:
 	IfEqual, gotomon ,2 , Goto, mon2-1080
 	IfEqual, gotomon ,3 , Goto, mon3-1080
+	WinMove, Windows Media Center, , 52, 0 , 1800
+	sleep, 500
 	WinMove, Windows Media Center, , 52, 0 , 1800
 	WinActivate, Windows Media Center
 	Goto, Run
@@ -156,14 +171,11 @@ move:
 	IfEqual, Mon2Bottom , 768, goto, mon2-768
 	IfEqual, Mon2Bottom , 900, goto, mon2-900
 	IfEqual, Mon2Bottom , 1050, goto, mon2-1050
-	Menu, Tray, Icon, ico_green.ico
-	;; msgbox, Ecran 2 -- mon2Left=%Mon2Left% -- Top=%Mon2Top% -- Right=%Mon2Right% -- Bottom=%Mon2Bottom% -- gotomon=%gotomon% -- 1920x=%1920x%
-	;; WinMove, Windows Media Center, , %Mon2Left%, 0 , 1800
-	;; WinMove, WinTitle, WinText, X, Y, Width, Height
-	SetEnv, 1920x, %Mon2Left%
-	EnvAdd, 1920x, 30
-	WinMove, Windows Media Center,, %1920x%, 0 , 1855,
-	WinMove, Windows Media Center,, %1920x%, 0 , 1855,
+	SetEnv, Mon3Left1, %Mon3Left%
+	EnvAdd, Mon3Left1, 30
+	WinMove, Windows Media Center,, %Mon3Left1%, 0 , 1855,
+	sleep, 500
+	WinMove, Windows Media Center,, %Mon3Left1%, 0 , 1855,
 	WinActivate, Windows Media Center
 	Goto, Run
 
@@ -171,14 +183,14 @@ move:
 	IfEqual, Mon3Bottom , 768, goto, mon3-768
 	IfEqual, Mon3Bottom , 900, goto, mon3-900
 	IfEqual, Mon3Bottom , 1050, goto, mon3-1050
-	Menu, Tray, Icon, ico_green.ico
-	;; msgbox, Ecran 2 -- mon2Left=%Mon2Left% -- Top=%Mon2Top% -- Right=%Mon2Right% -- Bottom=%Mon2Bottom% -- gotomon=%gotomon% -- 1920x=%1920x%
+	;; msgbox, Ecran 2 -- mon2Left=%Mon2Left% -- Top=%Mon2Top% -- Right=%Mon2Right% -- Bottom=%Mon2Bottom% -- gotomon=%gotomon% -- Mon3Left1=%Mon3Left1%
 	;; WinMove, Windows Media Center, , %Mon2Left%, 0 , 1800
 	;; WinMove, WinTitle, WinText, X, Y, Width, Height
-	SetEnv, 1920x, %Mon3Left%
-	EnvAdd, 1920x, 30
-	WinMove, Windows Media Center,, %1920x%, 0 , 1855,
-	WinMove, Windows Media Center,, %1920x%, 0 , 1855,
+	SetEnv, Mon3Left1, %Mon3Left%
+	EnvAdd, Mon3Left1, 30
+	WinMove, Windows Media Center,, %Mon3Left1%, 0 , 1855,
+	Sleep, 500
+	WinMove, Windows Media Center,, %Mon3Left1%, 0 , 1855,
 	WinActivate, Windows Media Center
 	Goto, Run
 
