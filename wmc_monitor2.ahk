@@ -10,7 +10,7 @@
 
 	SetEnv, title, WMC F3 move to monitor 2
 	SetEnv, mode, Fit Screen : HotKey F4
-	SetEnv, version, Version 2017-05-12
+	SetEnv, version, Version 2017-09-14-1602
 	SetEnv, Author, LostByteSoft
 
 ;;--- Softwares options ---
@@ -68,10 +68,13 @@ move:
 768:
 	IfEqual, gotomon, 2, Goto, mon2-768
 	IfEqual, gotomon, 3, Goto, mon3-768
-	WinMove, Windows Media Center, , 50, 0 , 1246
+	SetEnv, Mon1Left1, %Mon1Left%
+	EnvAdd, Mon1Left1, 50
+	WinMove, Windows Media Center, , %mon1left1%, 0 , 1246
 	Sleep, 500
-	WinMove, Windows Media Center, , 50, 0 , 1246
+	WinMove, Windows Media Center, , %mon1left1%, 0 , 1246
 	WinActivate, Windows Media Center
+	Menu, Tray, Icon, ico_green.ico
 	Goto, Run
 
 	mon2-768:
@@ -80,10 +83,11 @@ move:
 	IfEqual, Mon2Bottom , 1080, goto, mon2-1080
 	SetEnv, Mon2Left1, %Mon2Left%
 	EnvAdd, Mon2Left1, 20
-	WinMove, Windows Media Center, , %Mon2Left1%, 0 , 1317
+	WinMove, Windows Media Center, , %Mon2Left1%, 0, 1317
 	sleep, 500
-	WinMove, Windows Media Center, , %Mon2Left1%, 0 , 1317
+	WinMove, Windows Media Center, , %Mon2Left1%, 0, 1317
 	WinActivate, Windows Media Center
+	Menu, Tray, Icon, ico_green.ico
 	Goto, Run
 
 	mon3-768:
@@ -92,18 +96,23 @@ move:
 	IfEqual, Mon3Bottom , 1080, goto, mon3-1080
 	SetEnv, Mon3Left1, %Mon3Left%
 	EnvAdd, Mon3Left1, 20
+	SetEnv, Mon2Right1, %Mon2Right%
 	WinMove, Windows Media Center, , %Mon3Left1%, 0 , 1317
 	sleep, 500
 	WinMove, Windows Media Center, , %Mon3Left1%, 0 , 1317
 	WinActivate, Windows Media Center
+	Menu, Tray, Icon, ico_green.ico
 	Goto, Run
 900:
 	IfEqual, gotomon ,2 , Goto, mon2-900
 	IfEqual, gotomon ,3 , Goto, mon3-900
-	WinMove, Windows Media Center, , 100, 0 , 1550
+	SetEnv, Mon1Left1, %Mon1Left%
+	EnvAdd, Mon1Left1, 55
+	WinMove, Windows Media Center, , %Mon1Left1%, 0, 1480
 	sleep, 500
-	WinMove, Windows Media Center, , 100, 0 , 1550
+	WinMove, Windows Media Center, , %Mon1Left1%, 0, 1480
 	WinActivate, Windows Media Center
+	Menu, Tray, Icon, ico_green.ico
 	Goto, Run
 
 	mon2-900:
@@ -112,10 +121,11 @@ move:
 	IfEqual, Mon2Bottom , 1080, goto, mon2-1080
 	SetEnv, Mon2Left1, %Mon2Left%
 	EnvAdd, Mon2Left1, 30
-	WinMove, Windows Media Center, , %Mon2Left1%, 0 , 1570
+	WinMove, Windows Media Center, , %Mon2Left1%, 0, 1550
 	sleep, 500
-	WinMove, Windows Media Center, , %Mon2Left1%, 0 , 1570
+	WinMove, Windows Media Center, , %Mon2Left1%, 0, 1550
 	WinActivate, Windows Media Center
+	Menu, Tray, Icon, ico_green.ico
 	Goto, Run
 
 	mon3-900:
@@ -124,10 +134,11 @@ move:
 	IfEqual, Mon3Bottom , 1080, goto, mon3-1080
 	SetEnv, Mon3Left1, %Mon3Left%
 	EnvAdd, Mon3Left1, 30
-	WinMove, Windows Media Center, , %Mon3Left1%, 0 , 1570
+	WinMove, Windows Media Center, , %Mon3Left1%, 0, 1550
 	sleep, 500
-	WinMove, Windows Media Center, , %Mon3Left1%, 0 , 1570
+	WinMove, Windows Media Center, , %Mon3Left1%, 0, 1550
 	WinActivate, Windows Media Center
+	Menu, Tray, Icon, ico_green.ico
 	Goto, Run
 
 1050:
@@ -137,6 +148,7 @@ move:
 	sleep, 500
 	WinMove, Windows Media Center, , 0, 19 , 1680
 	WinActivate, Windows Media Center
+	Menu, Tray, Icon, ico_green.ico
 	Goto, Run
 
 	mon2-1050:
@@ -147,6 +159,7 @@ move:
 	sleep, 500
 	WinMove, Windows Media Center, , %Mon2Left%, 40 , 1680
 	WinActivate, Windows Media Center
+	Menu, Tray, Icon, ico_green.ico
 	Goto, Run
 
 	mon3-1050:
@@ -157,27 +170,31 @@ move:
 	sleep, 500
 	WinMove, Windows Media Center, , %Mon3Left%, 40 , 1680
 	WinActivate, Windows Media Center
+	Menu, Tray, Icon, ico_green.ico
 	Goto, Run
 
 1080:
 	IfEqual, gotomon ,2 , Goto, mon2-1080
 	IfEqual, gotomon ,3 , Goto, mon3-1080
+
 	WinMove, Windows Media Center, , 52, 0 , 1800
 	sleep, 500
 	WinMove, Windows Media Center, , 52, 0 , 1800
 	WinActivate, Windows Media Center
+	Menu, Tray, Icon, ico_green.ico
 	Goto, Run
 
 	mon2-1080:
 	IfEqual, Mon2Bottom , 768, goto, mon2-768
 	IfEqual, Mon2Bottom , 900, goto, mon2-900
 	IfEqual, Mon2Bottom , 1050, goto, mon2-1050
-	SetEnv, Mon3Left1, %Mon3Left%
-	EnvAdd, Mon3Left1, 30
-	WinMove, Windows Media Center,, %Mon3Left1%, 0 , 1855,
+	SetEnv, Mon2Left1, %Mon2Left%
+	EnvAdd, Mon2Left1, 30
+	WinMove, Windows Media Center,, %Mon2Left1%, 0, 1855,
 	sleep, 500
-	WinMove, Windows Media Center,, %Mon3Left1%, 0 , 1855,
+	WinMove, Windows Media Center,, %Mon2Left1%, 0, 1855,
 	WinActivate, Windows Media Center
+	Menu, Tray, Icon, ico_green.ico
 	Goto, Run
 
 	mon3-1080:
@@ -193,6 +210,7 @@ move:
 	Sleep, 500
 	WinMove, Windows Media Center,, %Mon3Left1%, 0 , 1855,
 	WinActivate, Windows Media Center
+	Menu, Tray, Icon, ico_green.ico
 	Goto, Run
 
 Default:
