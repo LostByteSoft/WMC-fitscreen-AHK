@@ -26,7 +26,7 @@
 
 	SetEnv, title, WMC FitScreen
 	SetEnv, mode, WMC Best Fit Screen : F6
-	SetEnv, version, Version 2017-09-17-2016
+	SetEnv, version, Version 2017-09-21-0846
 	SetEnv, Author, LostByteSoft
 
 	IniRead, autorun, WMC fitscreen.ini, options, autorun
@@ -104,12 +104,10 @@
 	Menu, tray, add, Open WMC fitscreen.ini, openini
 	Menu, Tray, Icon, Open WMC fitscreen.ini, ico_options.ico
 	menu, tray, add
-	menu, tray, add, --= Options Monitor Select =--, about
-	Menu, Tray, Icon, --= Options Monitor Select =--, ico_monitor.ico
-	menu, tray, add, Gotomon = %gotomon%, about
-	Menu, Tray, Icon, Gotomon = %gotomon%, ico_monitor.ico
- 	Menu, tray, add, Screen Choice, screenselecttray			; select screen menu
-	Menu, Tray, Icon, Screen Choice, ico_monitor.ico
+	menu, TwoTree, add, Gotomon = %gotomon%, about
+	Menu, TwoTree, Icon, Gotomon = %gotomon%, ico_monitor.ico
+ 	Menu, TwoTree, add, Screen Choice, screenselecttray			; select screen menu
+	Menu, TwoTree, Icon, Screen Choice, ico_monitor.ico
 	Menu, TwoTree, Add, --= Click && move =--, about
 	Menu, TwoTree, Icon, --= Click && move =--, ico_monitor.ico
 	Menu, TwoTree, Add, Monitor 1 and move, ButtonScreen_1
@@ -118,25 +116,31 @@
 	Menu, TwoTree, Icon, Monitor 2 and move, ico_2.ico
 	Menu, TwoTree, Add, Monitor 3 and move, ButtonScreen_3
 	Menu, TwoTree, Icon, Monitor 3 and move, ico_3.ico
-	Menu, Tray, Add, Click select monitor, :TwoTree
-	Menu, Tray, Icon, Click select monitor, ico_monitor.ico
+	;Menu, Tray, Add, Click select monitor, :TwoTree
+	;Menu, Tray, Icon, Click select monitor, ico_monitor.ico
+	menu, tray, add, --= Options Monitor Select =--, :TwoTree
+	Menu, Tray, Icon, --= Options Monitor Select =--, ico_monitor.ico
 	menu, tray, add
-	menu, tray, add, --= Hotkeys =--, about
+	Menu, threetree, Add, Pause (Toggle) Hotkey's = 0ff, pause
+	Menu, threetree, Icon, Pause (Toggle) Hotkey's = 0ff, ico_HotKeys.ico
+	Menu, threetree, Add, Hotkey: F2 Monitor 1, ButtonScreen_1
+	Menu, threetree, Icon, Hotkey: F2 Monitor 1, ico_1.ico
+	Menu, threetree, Add, Hotkey: F3 Monitor 2, ButtonScreen_2
+	Menu, threetree, Icon, Hotkey: F3 Monitor 2, ico_2.ico
+	Menu, threetree, Add, Hotkey: F4 Monitor 3, ButtonScreen_3
+	Menu, threetree, Icon, Hotkey: F4 Monitor 3, ico_3.ico
+	Menu, threetree, Add, Hotkey: F5 Minimize, minimize
+	Menu, threetree, Icon, Hotkey: F5 Minimize, ico_minimize.ico
+	Menu, threetree, Add, Hotkey: F6 Start / Adjust / Move, start
+	Menu, threetree, Icon, Hotkey: F6 Start / Adjust / Move, ico_green.ico
+	Menu, threetree, add, Hotkey: F8 - Mute, mute
+	Menu, threetree, Icon, Hotkey: F8 - Mute, ico_volume_2.ico
+	Menu, threetree, Add, Hotkey: F9 - Volume Up, about
+	Menu, threetree, Icon, Hotkey: F9 - Volume Up, ico_HotKeys.ico
+	Menu, threetree, Add, Hotkey: F10 - Volume Down, about
+	Menu, threetree, Icon, Hotkey: F10 - Volume Down, ico_HotKeys.ico
+	menu, tray, add, --= Hotkeys =--, :threetree
 	Menu, Tray, Icon, --= Hotkeys =--, ico_HotKeys.ico
-	Menu, tray, Add, Pause (Toggle) Hotkey's = 0ff, pause
-	Menu, tray, Icon, Pause (Toggle) Hotkey's = 0ff, ico_HotKeys.ico
-	Menu, tray, Add, Hotkey: F2 Monitor 1, ButtonScreen_1
-	Menu, tray, Icon, Hotkey: F2 Monitor 1, ico_1.ico
-	Menu, tray, Add, Hotkey: F3 Monitor 2, ButtonScreen_2
-	Menu, tray, Icon, Hotkey: F3 Monitor 2, ico_2.ico
-	Menu, tray, Add, Hotkey: F4 Monitor 3, ButtonScreen_3
-	Menu, tray, Icon, Hotkey: F4 Monitor 3, ico_3.ico
-	Menu, tray, add, Hotkey: F8 - Mute, mute
-	Menu, Tray, Icon, Hotkey: F8 - Mute, ico_volume_2.ico
-	Menu, Tray, Add, Hotkey: F9 - Volume Up, about
-	Menu, Tray, Icon, Hotkey: F9 - Volume Up, ico_HotKeys.ico
-	Menu, Tray, Add, Hotkey: F10 - Volume Down, about
-	Menu, Tray, Icon, Hotkey: F10 - Volume Down, ico_HotKeys.ico
 	menu, tray, add
 	Menu, tray, add, WMC Exit / Close, wmcclose				; Close or Exit WMC, useful when in nochrome mode
 	Menu, Tray, Icon, WMC Exit / Close, ico_shut.ico
@@ -147,7 +151,7 @@
 	Menu, tray, add, WMC Maximize, Maximize					; Maximize
 	Menu, Tray, Icon, WMC Maximize, ico_Maximize.ico
 	menu, tray, add,
-	Menu, tray, add, Simple Start (Ajust no options), SimpleStart				; Run the script.
+	Menu, tray, add, Simple Start (Ajust no options), SimpleStart		; Run the script.
 	Menu, Tray, Icon, Simple Start (Ajust no options), ico_wmc.ico
 	Menu, tray, add, F6 Start / Adjust / Move, start			; Run the script.
 	Menu, Tray, Icon, F6 Start / Adjust / Move, ico_wmc.ico
