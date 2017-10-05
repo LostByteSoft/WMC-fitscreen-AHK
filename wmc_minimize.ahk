@@ -10,7 +10,7 @@
 
 	SetEnv, title, WMC F5 Minimize
 	SetEnv, mode, Hotkey : F5 minimize only if activated
-	SetEnv, version, Version 2017-05-12
+	SetEnv, version, Version 2017-09-29-1024
 	SetEnv, Author, LostByteSoft
 
 ;;--- Softwares options ---
@@ -25,7 +25,7 @@
 
 	Menu, Tray, NoStandard
 	Menu, tray, add, --= WMC FitScreen =--, about
-	Menu, Tray, Icon, --= WMC FitScreen =--, ico_wmc.ico, 1
+	Menu, Tray, Icon, --= WMC FitScreen =--, ico_wmc.ico
 	Menu, tray, add
 	Menu, tray, add, Exit, ExitApp
 	Menu, Tray, Icon, Exit, ico_shut.ico
@@ -33,7 +33,7 @@
 	Menu, Tray, Icon, Deactivate HotKey, ico_minimize.ico
 	Menu, tray, add
 	Menu, tray, add, Hotkey: F5 MiniMize, minimize
-	Menu, Tray, Icon, Hotkey: F5 MiniMize, ico_HotKeys.ico, 1
+	Menu, Tray, Icon, Hotkey: F5 MiniMize, ico_HotKeys.ico
 	Menu, Tray, Tip, %title%
 
 ;;--- Software start here ---
@@ -47,7 +47,7 @@ start:
 
 minimize:
 	IniRead, pausekey, WMC fitscreen.ini, options, pausekey
-	IfEqual, pausekey, 1, Goto, msgtip
+	IfEqual, pausekey, 1, Goto, paused
 	;MsgBox, pausekey=%pausekey% OutputVar=%OutputVar%
 	WinMinimize, Windows Media Center
 	Sleep, 1000
@@ -57,9 +57,8 @@ Deactivate:
 	IniWrite, 0, WMC fitscreen.ini, options, hotkeyf5
 	Goto, ExitApp
 
-msgtip:
-	;TrayTip, %title%, HotKey deactivated., 1, 1
-	sleep, 2000
+paused:
+	sleep, 5000
 	Goto, Start
 
 ;;--- Quit (escape , esc) ---
