@@ -10,7 +10,7 @@
 
 	SetEnv, title, WMC F2 move to monitor 1
 	SetEnv, mode, Fit Screen : HotKey F3
-	SetEnv, version, Version 2017-09-14-1601
+	SetEnv, version, Version 2017-10-09-1912
 	SetEnv, Author, LostByteSoft
 
 ;;--- Softwares options ---
@@ -20,39 +20,40 @@
 	#Persistent
 	#NoEnv
 
-;;--- Menu Tray options ---
+	FileInstall, icons\ico_HotKeys.ico, ico_HotKeys.ico, 0
+	FileInstall, icons\ico_shut.ico, ico_shut.ico, 0
+	FileInstall, icons\ico_1.ico, ico_1.ico, 0
 
 	Menu, Tray, NoStandard
-	Menu, tray, add, --= WMC FitScreen =--, about
-	Menu, Tray, Icon, --= WMC FitScreen =--, ico_wmc.ico, 1
-	Menu, tray, add
 	Menu, tray, add, Exit, GuiClose2
 	Menu, Tray, Icon, Exit, ico_shut.ico
 	Menu, tray, add, Deactivate HotKey, Deactivate
 	Menu, Tray, Icon, Deactivate HotKey, ico_1.ico
-	Menu, tray, add
 	Menu, tray, add, Hotkey: F2 Monitor 1, run2
 	Menu, Tray, Icon, Hotkey: F2 Monitor 1, ico_HotKeys.ico
 	Menu, Tray, Tip, %title%
 
 ;;--- Software start here ---
 
-start:
 run:
 	Menu, Tray, Icon, ico_1.ico
 	KeyWait, F2, D
 	run2:
 	IniRead, pausekey, WMC fitscreen.ini, options, pausekey
-	IfEqual, pausekey, 1, Goto, msgtip
+	IfEqual, pausekey, 1, Goto, inpause
 	SysGet, MonitorCount, MonitorCount
 	SysGet, MonitorPrimary, MonitorPrimary
 	SysGet, Mon1, Monitor, 1
-	;SysGet, Mon2, Monitor, 2
-	;SysGet, Mon3, Monitor, 3
+	; SysGet, Mon2, Monitor, 2
+	; SysGet, Mon3, Monitor, 3
 	SetEnv, gotomon, 1
 	IniWrite, 1, WMC fitscreen.ini, options, gotomon
 	IfWinExist, Windows Media Center,, goto, move
 	Goto, Run
+
+inpause:
+	sleep, 5000
+	Goto, run
 
 move:
 	Menu, Tray, Icon, ico_yellow.ico
@@ -234,11 +235,6 @@ GuiClose2:
 	ExitApp
 
 ;;--- Tray Bar (must be at end of file) ---
-
-msgtip:
-	;TrayTip, %title%, HotKey deactivated., 1, 1
-	sleep, 2000
-	Goto, Start
 
 Deactivate:
 	IniWrite, 0, WMC fitscreen.ini, options, hotkeyf2

@@ -10,7 +10,7 @@
 
 	SetEnv, title, WMC F4 move to monitor 3
 	SetEnv, mode, Fit Screen : HotKey F4
-	SetEnv, version, Version 2017-09-14-1602
+	SetEnv, version, Version 2017-10-09-1913
 	SetEnv, Author, LostByteSoft
 
 ;;--- Softwares options ---
@@ -20,32 +20,30 @@
 	#Persistent
 	#NoEnv
 
-;;--- Menu Tray options ---
+	FileInstall, icons\ico_HotKeys.ico, ico_HotKeys.ico, 0
+	FileInstall, icons\ico_shut.ico, ico_shut.ico, 0
+	FileInstall, icons\ico_3.ico, ico_3.ico, 0
 
 	Menu, Tray, NoStandard
-	Menu, tray, add, --= WMC FitScreen =--, about
-	Menu, Tray, Icon, --= WMC FitScreen =--, ico_wmc.ico, 1
-	Menu, tray, add
 	Menu, tray, add, Exit, GuiClose2
 	Menu, Tray, Icon, Exit, ico_shut.ico
 	Menu, tray, add, Deactivate HotKey, Deactivate
 	Menu, Tray, Icon, Deactivate HotKey, ico_3.ico
-	Menu, tray, add
 	Menu, tray, add, Hotkey: F4 Monitor 3, run2
 	Menu, Tray, Icon, Hotkey: F4 Monitor 3, ico_HotKeys.ico
 	Menu, Tray, Tip, %title%
 
 ;;--- Software start here ---
 
-start:
 run:
 	Menu, Tray, Icon, ico_3.ico
 	KeyWait, F4, D
 	run2:
 	IniRead, pausekey, WMC fitscreen.ini, options, pausekey
-	IfEqual, pausekey, 1, Goto, msgtip
+	IfEqual, pausekey, 1, Goto, inpause
 	SysGet, MonitorCount, MonitorCount
 	IfEqual, MonitorCOunt, 1, goto, onlyonemonitor
+	IfEqual, MonitorCOunt, 2, goto, onlyonemonitor
 	SysGet, MonitorPrimary, MonitorPrimary
 	SysGet, Mon1, Monitor, 1
 	SysGet, Mon2, Monitor, 2
@@ -54,6 +52,18 @@ run:
 	IniWrite, 3, WMC fitscreen.ini, options, gotomon
 	IfWinExist, Windows Media Center,, goto, move
 	Goto, Run
+
+inpause:
+	sleep, 2000
+	Goto, run
+
+onlyonemonitor:
+	MsgBox, 0, WMC FitScreen, You only have one monitor. You could not change this setting. %title% %mode% (Time out 10 sec.). This msg is just information, it will not disable this shortcut., 10
+	Goto, inpause
+
+Deactivate:
+	IniWrite, 0, WMC fitscreen.ini, options, hotkeyf4
+	Goto, ExitApp
 
 move:
 	Menu, Tray, Icon, ico_yellow.ico
@@ -235,19 +245,6 @@ GuiClose2:
 	ExitApp
 
 ;;--- Tray Bar (must be at end of file) ---
-
-msgtip:
-	;TrayTip, %title%, HotKey deactivated., 1, 1
-	sleep, 2000
-	Goto, Start
-
-onlyonemonitor:
-	MsgBox, 0, WMC FitScreen, You only have one monitor. You could not change this setting. %title% %mode% (Time out 10 sec.), 10
-	Goto, run
-
-Deactivate:
-	IniWrite, 0, WMC fitscreen.ini, options, hotkeyf4
-	Goto, ExitApp
 
 about:
 	TrayTip, %title%, %mode% by %author%, 2, 1

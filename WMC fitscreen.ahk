@@ -26,13 +26,12 @@
 
 	SetEnv, title, WMC FitScreen
 	SetEnv, mode, WMC Best Fit Screen : F6
-	SetEnv, version, Version 2017-10-08-1413
+	SetEnv, version, Version 2017-10-09-1755
 	SetEnv, Author, LostByteSoft
 	SetEnv, logoicon, ico_green.ico
 
 	IniRead, autorun, WMC fitscreen.ini, options, autorun
 	IniRead, timer, WMC fitscreen.ini, options, timer
-	IniRead, start, WMC fitscreen.ini, options, start
 	IniRead, minimize, WMC fitscreen.ini, options, minimize
 	IniRead, hotkeyf2, WMC fitscreen.ini, options, hotkeyf2
 	IniRead, hotkeyf3, WMC fitscreen.ini, options, hotkeyf3
@@ -63,6 +62,7 @@
 	FileInstall, icons\ico_full.ico, ico_full.ico, 0
 	FileInstall, icons\ico_monitor.ico, ico_monitor.ico, 0
 	FileInstall, icons\ico_minimize.ico, ico_minimize.ico, 0
+	FileInstall, icons\ico_minimize_pause.ico, ico_minimize_pause.ico, 0
 	FileInstall, icons\ico_maximize.ico, ico_maximize.ico, 0
 	FileInstall, icons\ico_mute.ico, ico_mute.ico, 0
 	FileInstall, icons\ico_1.ico, ico_1.ico, 0
@@ -89,7 +89,7 @@
 	Menu, tray, add, %version%, about
 	menu, tray, disable, %version%
 	menu, tray, add
-	Menu, tray, add, Exit FitScreen, GuiClose2				; GuiClose exit program
+	Menu, tray, add, Exit FitScreen, ExitApp				; GuiClose exit program
 	Menu, Tray, Icon, Exit FitScreen, ico_shut.ico
 	Menu, tray, add, Refresh FitScreen, doReload				; Reload the script.
 	Menu, Tray, Icon, Refresh FitScreen, ico_reboot.ico
@@ -152,7 +152,7 @@
 	Menu, Tray, Icon, Start / Move / minimize, ico_wmc.ico
 	Menu, tray, add, Start / Move, SimpleStartmove				; Run the script.
 	Menu, Tray, Icon, Start / Move, ico_wmc.ico
-	Menu, tray, add, F6 Start / Move / Options, F6startmoveoptions			; Run the script.
+	Menu, tray, add, F6 Start / Move / Options, F6startmoveoptions		; Run the script.
 	Menu, Tray, Icon, F6 Start / Move / Options, ico_wmc.ico
 	menu, tray, add,
 	Menu, Tray, Tip, %mode%
@@ -177,6 +177,7 @@ run:
 	KeyWait, F6, D
 	Menu, Tray, Icon, ico_red.ico
 	IfWinExist, Windows Media Center,, goto, move
+	IniRead, start, WMC fitscreen.ini, options, start
 	goto, start
 
 ;; --- Start Options ---
@@ -427,10 +428,6 @@ Default:
 		Gui, Show, x1095 y420 h200 w475, %title%
 		Return
 
-	GuiClose:
-		Gui, destroy
-		Goto, run
-
 	ButtonCancel:
 		Gui, destroy
 		Menu, Tray, Icon, ico_green.ico
@@ -465,6 +462,7 @@ Default:
 		Menu, Tray, Icon, ico_yellow.ico
 		IniRead, gotomon, WMC fitscreen.ini, options, gotomon
 		setenv, oldgotomon, %gotomon%
+		IfEqual, Monitorcount, 1, Goto, Monitorcounterror
 		IfEqual, Monitorcount, 2, Goto, Monitorcounterror
 		IniWrite, 3, WMC fitscreen.ini, options, gotomon
 		SetEnv, gotomon, 3
@@ -553,7 +551,7 @@ pause:
 error_01:
 	Random, error, 1111, 9999
 	MsgBox, ERROR_%error% WMC not installed (Install WMC). An error occur. Program close...
-	goto, GuiClose2
+	goto, ExitApp
 
 ;;--- Quit (escape , esc) ---
 
@@ -562,7 +560,7 @@ doReload:
 	Reload
 	sleep, 500
 
-GuiClose2:
+ExitApp:
 	Process, Close, wmc_monitor1.exe
 	Process, Close, wmc_monitor2.exe
 	Process, Close, wmc_monitor3.exe
@@ -571,6 +569,10 @@ GuiClose2:
 
 ;Escape::		; Debug purpose
 	ExitApp
+
+GuiClose:
+	Gui, destroy
+	Goto, run
 
 ;;--- Tray Bar (must be at end of file) ---
 

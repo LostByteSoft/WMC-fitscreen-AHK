@@ -10,10 +10,12 @@
 
 	SetEnv, title, WMC F3 move to monitor 2
 	SetEnv, mode, Fit Screen : HotKey F4
-	SetEnv, version, Version 2017-09-14-1602
+	SetEnv, version, Version 2017-10-09-1917
 	SetEnv, Author, LostByteSoft
 
-;;--- Softwares options ---
+	FileInstall, icons\ico_HotKeys.ico, ico_HotKeys.ico, 0
+	FileInstall, icons\ico_shut.ico, ico_shut.ico, 0
+	FileInstall, icons\ico_2.ico, ico_2.ico, 0
 
 	SetWorkingDir, %A_ScriptDir%
 	#SingleInstance Force
@@ -23,37 +25,40 @@
 ;;--- Menu Tray options ---
 
 	Menu, Tray, NoStandard
-	Menu, tray, add, --= WMC FitScreen =--, about
-	Menu, Tray, Icon, --= WMC FitScreen =--, ico_wmc.ico, 1
-	Menu, tray, add
 	Menu, tray, add, Exit, GuiClose2
 	Menu, Tray, Icon, Exit, ico_shut.ico
 	Menu, tray, add, Deactivate HotKey, Deactivate
 	Menu, Tray, Icon, Deactivate HotKey, ico_2.ico
-	Menu, tray, add
 	Menu, tray, add, Hotkey: F3 Monitor 2, run2
 	Menu, Tray, Icon, Hotkey: F3 Monitor 2, ico_HotKeys.ico
 	Menu, Tray, Tip, %title%
 
 ;;--- Software start here ---
 
-start:
 run:
 	Menu, Tray, Icon, ico_2.ico
 	KeyWait, F3, D
 	run2:
 	IniRead, pausekey, WMC fitscreen.ini, options, pausekey
-	IfEqual, pausekey, 1, Goto, msgtip
+	IfEqual, pausekey, 1, Goto, inpause
 	SysGet, MonitorCount, MonitorCount
 	IfEqual, MonitorCOunt, 1, goto, onlyonemonitor
 	SysGet, MonitorPrimary, MonitorPrimary
 	SysGet, Mon1, Monitor, 1
 	SysGet, Mon2, Monitor, 2
-	;SysGet, Mon3, Monitor, 3
+	; SysGet, Mon3, Monitor, 3
 	SetEnv, gotomon, 2
 	IniWrite, 2, WMC fitscreen.ini, options, gotomon
 	IfWinExist, Windows Media Center,, goto, move
 	Goto, Run
+
+inpause:
+	sleep, 5000
+	Goto, run
+
+onlyonemonitor:
+	MsgBox, 0, WMC FitScreen, You only have one monitor. You could not change this setting. %title% %mode% (Time out 10 sec.). This msg is just information, it will not disable this shortcut., 10
+	Goto, inpause
 
 move:
 	Menu, Tray, Icon, ico_yellow.ico
@@ -235,15 +240,6 @@ GuiClose2:
 	ExitApp
 
 ;;--- Tray Bar (must be at end of file) ---
-
-msgtip:
-	;TrayTip, %title%, HotKey deactivated., 1, 1
-	sleep, 2000
-	Goto, Start
-
-onlyonemonitor:
-	MsgBox, 0, WMC FitScreen, You only have one monitor. You could not change this setting. %title% %mode% (Time out 10 sec.), 10
-	Goto, run
 
 Deactivate:
 	IniWrite, 0, WMC fitscreen.ini, options, hotkeyf3
