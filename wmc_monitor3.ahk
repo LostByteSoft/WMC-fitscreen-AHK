@@ -10,7 +10,7 @@
 
 	SetEnv, title, WMC F4 move to monitor 3
 	SetEnv, mode, Fit Screen : HotKey F4
-	SetEnv, version, Version 2017-10-09-1913
+	SetEnv, version, Version 2017-10-12-1630
 	SetEnv, Author, LostByteSoft
 
 ;;--- Softwares options ---
@@ -58,7 +58,7 @@ inpause:
 	Goto, run
 
 onlyonemonitor:
-	MsgBox, 0, WMC FitScreen, You only have one monitor. You could not change this setting. %title% %mode% (Time out 10 sec.). This msg is just information, it will not disable this shortcut., 10
+	MsgBox, 0, WMC FitScreen, You only have one monitor. You could not change this setting. %title% %mode% (Time out 10 sec.). This msg is just information. It will not disable this shortcut., 10
 	Goto, inpause
 
 Deactivate:
