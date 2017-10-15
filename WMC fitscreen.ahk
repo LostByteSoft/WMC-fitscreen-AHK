@@ -26,19 +26,9 @@
 
 	SetEnv, title, WMC FitScreen
 	SetEnv, mode, WMC Best Fit Screen : F6
-	SetEnv, version, Version 2017-10-09-1755
+	SetEnv, version, Version 2017-10-15-0838
 	SetEnv, Author, LostByteSoft
 	SetEnv, logoicon, ico_green.ico
-
-	IniRead, autorun, WMC fitscreen.ini, options, autorun
-	IniRead, timer, WMC fitscreen.ini, options, timer
-	IniRead, minimize, WMC fitscreen.ini, options, minimize
-	IniRead, hotkeyf2, WMC fitscreen.ini, options, hotkeyf2
-	IniRead, hotkeyf3, WMC fitscreen.ini, options, hotkeyf3
-	IniRead, hotkeyf4, WMC fitscreen.ini, options, hotkeyf4
-	IniRead, hotkeyF5, WMC fitscreen.ini, options, hotkeyF5
-	IniRead, gotomon, WMC fitscreen.ini, options, gotomon
-	IniRead, pausekey, WMC fitscreen.ini, options, pausekey
 
 	SysGet, MonitorCount, MonitorCount
 	SysGet, MonitorPrimary, MonitorPrimary
@@ -46,11 +36,9 @@
 	SysGet, Mon2, Monitor, 2
 	SysGet, Mon3, Monitor, 3
 
-	IfEqual, Monitorcount, 1, IniWrite, 1, WMC fitscreen.ini, options, gotomon
-
 ;;--- Softwares options ---
 
-	FileInstall, WMC fitscreen.ini, WMC fitscreen.ini, 0
+	FileInstall, WMCfitscreen.ini, WMCfitscreen.ini, 0
 	FileInstall, icons\ico_green.ico, ico_green.ico, 0
 	FileInstall, icons\ico_yellow.ico, ico_yellow.ico, 0
 	FileInstall, icons\ico_red.ico, ico_red.ico, 0
@@ -62,7 +50,6 @@
 	FileInstall, icons\ico_full.ico, ico_full.ico, 0
 	FileInstall, icons\ico_monitor.ico, ico_monitor.ico, 0
 	FileInstall, icons\ico_minimize.ico, ico_minimize.ico, 0
-	FileInstall, icons\ico_minimize_pause.ico, ico_minimize_pause.ico, 0
 	FileInstall, icons\ico_maximize.ico, ico_maximize.ico, 0
 	FileInstall, icons\ico_mute.ico, ico_mute.ico, 0
 	FileInstall, icons\ico_1.ico, ico_1.ico, 0
@@ -73,6 +60,18 @@
 	FileInstall, icons\ico_HotKeys.ico, ico_HotKeys.ico, 0
 	FileInstall, icons\ico_pause.ico, ico_pause.ico, 0
 	FileInstall, icons\ico_green_pause.ico, ico_green_pause.ico, 0
+
+	IniRead, start, WMCfitscreen.ini, options, start
+	IniRead, autorun, WMCfitscreen.ini, options, autorun
+	IniRead, timer, WMCfitscreen.ini, options, timer
+	IniRead, minimize, WMCfitscreen.ini, options, minimize
+	IniRead, hotkeyf2, WMCfitscreen.ini, options, hotkeyf2
+	IniRead, hotkeyf3, WMCfitscreen.ini, options, hotkeyf3
+	IniRead, hotkeyf4, WMCfitscreen.ini, options, hotkeyf4
+	IniRead, hotkeyF5, WMCfitscreen.ini, options, hotkeyF5
+	IniRead, gotomon, WMCfitscreen.ini, options, gotomon
+	IniRead, pausekey, WMCfitscreen.ini, options, pausekey
+	IfEqual, Monitorcount, 1, IniWrite, 1, WMCfitscreen.ini, options, gotomon
 
 ;;--- Menu Tray options ---
 
@@ -102,8 +101,8 @@
 	menu, tray, disable, Start Timer = %timer% (If autorun=1)
 	Menu, tray, add, Minimize start = %minimize%, about
 	menu, tray, disable, Minimize start = %minimize%
-	Menu, tray, add, Open WMC fitscreen.ini, openini
-	Menu, Tray, Icon, Open WMC fitscreen.ini, ico_options.ico
+	Menu, tray, add, Open WMCfitscreen.ini, openini
+	Menu, Tray, Icon, Open WMCfitscreen.ini, ico_options.ico
 	menu, tray, add
 	menu, tray, add, --= Options Monitor Select =--, about
 	Menu, Tray, Icon, --= Options Monitor Select =--, ico_monitor.ico
@@ -159,6 +158,7 @@
 
 ;;--- Software start here ---
 
+	IfNotExist, WMCfitscreen.ini, FileInstall, WMCfitscreen.ini, WMCfitscreen.ini, 0
 	IfNotExist, %windir%\ehome\ehshell.exe, Goto, error_01
 	IfEqual, hotkeyf2, 1, Run, "wmc_monitor1.exe"
 	IfEqual, hotkeyf3, 1, Run, "wmc_monitor2.exe"
@@ -168,6 +168,7 @@
 	IfEqual, pausekey, 1, Menu, threetree, rename, Pause (Toggle) Hotkey's = 0ff, Pause (Toggle) Hotkey's = On
 	IfEqual, pausekey, 1, Menu, threetree, Icon, Pause (Toggle) Hotkey's = On, ico_pause.ico
 	IfWinExist, Windows Media Center,, goto, maxstart
+	IniRead, start, WMCfitscreen.ini, options, start
 	IfEqual, Autorun, 1, Goto, Start
 	Goto, run
 
@@ -177,7 +178,7 @@ run:
 	KeyWait, F6, D
 	Menu, Tray, Icon, ico_red.ico
 	IfWinExist, Windows Media Center,, goto, move
-	IniRead, start, WMC fitscreen.ini, options, start
+	IniRead, start, WMCfitscreen.ini, options, start
 	goto, start
 
 ;; --- Start Options ---
@@ -209,7 +210,7 @@ start:
 		goto, move
 
 	F6startmoveoptions:
-		IniRead, start, WMC fitscreen.ini, options, start
+		IniRead, start, WMCfitscreen.ini, options, start
 		goto, start
 
 	SimpleStartmin:
@@ -223,7 +224,7 @@ move:
 	Menu, Tray, Icon, ico_yellow.ico
 	WinActivate, Windows Media Center
 	Sleep, 500
-	IniRead, gotomon, WMC fitscreen.ini, options, gotomon
+	IniRead, gotomon, WMCfitscreen.ini, options, gotomon
 	IfEqual, Mon1Bottom , 768, goto, 768
 	IfEqual, Mon1Bottom , 900, goto, 900
 	IfEqual, Mon1Bottom , 1050, goto, 1050
@@ -417,7 +418,7 @@ Default:
 		;setenv gotomon1, %gotomon%
 
 	screenselectgui2:
-		IniRead, gotomon, WMC fitscreen.ini, options, gotomon
+		IniRead, gotomon, WMCfitscreen.ini, options, gotomon
 		setenv, oldgotomon, %gotomon%
 		Gui, Add, Button, x350 y130 w75 h30 , Cancel
 		Gui, Add, Text, x5 y5 w358 h98 , On witch monitor do you want to adjust WMC ? (If running it will move)`n`n`t(3 monitor supported maximum)`n`tActual monitor:`t%gotomon%`n`tMonitor Count:`t%MonitorCount%`n`tPrimary Monitor:`t%MonitorPrimary%
@@ -437,9 +438,9 @@ Default:
 
 	ButtonScreen_1:
 		Menu, Tray, Icon, ico_yellow.ico
-		IniRead, gotomon, WMC fitscreen.ini, options, gotomon
+		IniRead, gotomon, WMCfitscreen.ini, options, gotomon
 		setenv, oldgotomon, %gotomon%
-		IniWrite, 1, WMC fitscreen.ini, options, gotomon
+		IniWrite, 1, WMCfitscreen.ini, options, gotomon
 		SetEnv, gotomon, 1
 		IFEqual, OldGotomon, 1, Goto, Skip5
 		Menu, Tray, Rename, Screen Choice && Gotomon = %oldgotomon%, Screen Choice && Gotomon = 1
@@ -448,10 +449,10 @@ Default:
 
 	ButtonScreen_2:
 		Menu, Tray, Icon, ico_yellow.ico
-		IniRead, gotomon, WMC fitscreen.ini, options, gotomon
+		IniRead, gotomon, WMCfitscreen.ini, options, gotomon
 		setenv, oldgotomon, %gotomon%
 		IfEqual, Monitorcount, 1, Goto, Monitorcounterror
-		IniWrite, 2, WMC fitscreen.ini, options, gotomon
+		IniWrite, 2, WMCfitscreen.ini, options, gotomon
 		SetEnv, gotomon, 2
 		IFEqual, OldGotomon, 2, Goto, Skip6
 		Menu, Tray, Rename, Screen Choice && Gotomon = %oldgotomon%, Screen Choice && Gotomon = 2
@@ -460,11 +461,11 @@ Default:
 
 	ButtonScreen_3:
 		Menu, Tray, Icon, ico_yellow.ico
-		IniRead, gotomon, WMC fitscreen.ini, options, gotomon
+		IniRead, gotomon, WMCfitscreen.ini, options, gotomon
 		setenv, oldgotomon, %gotomon%
 		IfEqual, Monitorcount, 1, Goto, Monitorcounterror
 		IfEqual, Monitorcount, 2, Goto, Monitorcounterror
-		IniWrite, 3, WMC fitscreen.ini, options, gotomon
+		IniWrite, 3, WMCfitscreen.ini, options, gotomon
 		SetEnv, gotomon, 3
 		IFEqual, OldGotomon, 3, Goto, Skip7
 		Menu, Tray, Rename, Screen Choice && Gotomon = %oldgotomon%, Screen Choice && Gotomon = 3
@@ -493,7 +494,7 @@ maximize:
 
 openini:
 	Menu, Tray, Icon, ico_yellow.ico
-	run, notepad.exe "WMC fitscreen.ini"
+	run, notepad.exe "WMCfitscreen.ini"
 	Sleep, 1000
 	goto, run
 
@@ -517,12 +518,12 @@ mute:
 
 timerset:
 	Menu, Tray, Icon, ico_yellow.ico
-	IniRead, timer, WMC fitscreen.ini, options, timer
+	IniRead, timer, WMCfitscreen.ini, options, timer
 	SetENv, oldtimer, %timer%
 	InputBox, newtimer, WMC fitscreen, Set new timer start in seconds ? Now time is %timer% sec. Set between 1 and 240 seconds
 		if ErrorLevel
 			goto, run
-	IniWrite, %newtimer%, WMC fitscreen.ini, options, timer
+	IniWrite, %newtimer%, WMCfitscreen.ini, options, timer
 	;msgbox, old=%oldtimer%000 ... new=%newtimer%000
 	IfGreater, newtimer, 240, Goto, Timerset
 	IfLess, newtimer, 0, Goto, Timerset
@@ -533,7 +534,7 @@ timerset:
 pause:
 	Menu, Tray, Icon, ico_yellow.ico
 	IfEqual, pausekey, 1, goto, unpause
-	IniWrite, 1, WMC fitscreen.ini, options, pausekey
+	IniWrite, 1, WMCfitscreen.ini, options, pausekey
 	Menu, Tray, Icon, ico_green_pause.ico
 	Menu, threetree, rename, Pause (Toggle) Hotkey's = 0ff, Pause (Toggle) Hotkey's = On
 	Menu, threetree, Icon, Pause (Toggle) Hotkey's = On, ico_pause.ico
@@ -542,7 +543,7 @@ pause:
 
 	unpause:
 	Menu, threetree, Icon, Pause (Toggle) Hotkey's = On, ico_HotKeys.ico
-	IniWrite, 0, WMC fitscreen.ini, options, pausekey
+	IniWrite, 0, WMCfitscreen.ini, options, pausekey
 	Menu, threetree, rename, Pause (Toggle) Hotkey's = On, Pause (Toggle) Hotkey's = 0ff
 	Menu, Tray, Icon, ico_green.ico
 	SetEnv, pausekey, 0
@@ -584,16 +585,16 @@ wmcclose:
 
 secret:
 	Menu, Tray, Icon, ico_yellow.ico
-	IniRead, autorun, WMC fitscreen.ini, options, autorun
-	IniRead, timer, WMC fitscreen.ini, options, timer
-	IniRead, start, WMC fitscreen.ini, options, start
-	IniRead, minimize, WMC fitscreen.ini, options, minimize
-	IniRead, hotkeyf2, WMC fitscreen.ini, options, hotkeyf2
-	IniRead, hotkeyf3, WMC fitscreen.ini, options, hotkeyf3
-	IniRead, hotkeyf4, WMC fitscreen.ini, options, hotkeyf4
-	IniRead, hotkeyF5, WMC fitscreen.ini, options, hotkeyF5
-	IniRead, gotomon, WMC fitscreen.ini, options, gotomon
-	IniRead, pausekey, WMC fitscreen.ini, options, pausekey
+	IniRead, autorun, WMCfitscreen.ini, options, autorun
+	IniRead, timer, WMCfitscreen.ini, options, timer
+	IniRead, start, WMCfitscreen.ini, options, start
+	IniRead, minimize, WMCfitscreen.ini, options, minimize
+	IniRead, hotkeyf2, WMCfitscreen.ini, options, hotkeyf2
+	IniRead, hotkeyf3, WMCfitscreen.ini, options, hotkeyf3
+	IniRead, hotkeyf4, WMCfitscreen.ini, options, hotkeyf4
+	IniRead, hotkeyF5, WMCfitscreen.ini, options, hotkeyF5
+	IniRead, gotomon, WMCfitscreen.ini, options, gotomon
+	IniRead, pausekey, WMCfitscreen.ini, options, pausekey
 	SysGet, MonitorCount, MonitorCount
 	SysGet, MonitorPrimary, MonitorPrimary
 	SysGet, Mon1, Monitor, 1
@@ -614,7 +615,7 @@ autorunonoff:
 
 	enableautorun:
 	Menu, Tray, Icon, ico_yellow.ico
-	IniWrite, 1, WMC fitscreen.ini, options, autorun
+	IniWrite, 1, WMCfitscreen.ini, options, autorun
 	SetEnv, autorun, 1
 	TrayTip, %title%, Autorun enabled - %autorun%, 2, 2
 	Menu, Tray, Rename, Autorun On/Off = 0, Autorun On/Off = 1
@@ -624,7 +625,7 @@ autorunonoff:
 
 	disableautorun:
 	Menu, Tray, Icon, ico_yellow.ico
-	IniWrite, 0, WMC fitscreen.ini, options, autorun
+	IniWrite, 0, WMCfitscreen.ini, options, autorun
 	SetEnv, autorun, 0
 	TrayTip, %title%, Autorun disabled - %autorun%, 2, 2
 	Menu, Tray, Rename, Autorun On/Off = 1, Autorun On/Off = 0
