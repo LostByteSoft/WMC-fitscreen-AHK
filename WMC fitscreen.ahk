@@ -26,7 +26,7 @@
 
 	SetEnv, title, WMC FitScreen
 	SetEnv, mode, WMC Best Fit Screen : F6
-	SetEnv, version, Version 2017-10-15-0838
+	SetEnv, version, Version 2017-10-15-1113
 	SetEnv, Author, LostByteSoft
 	SetEnv, logoicon, ico_green.ico
 
@@ -60,10 +60,12 @@
 	FileInstall, icons\ico_HotKeys.ico, ico_HotKeys.ico, 0
 	FileInstall, icons\ico_pause.ico, ico_pause.ico, 0
 	FileInstall, icons\ico_green_pause.ico, ico_green_pause.ico, 0
+	FileInstall, icons\ico_debug.ico, ico_debug.ico, 0
 
 	IniRead, start, WMCfitscreen.ini, options, start
 	IniRead, autorun, WMCfitscreen.ini, options, autorun
 	IniRead, timer, WMCfitscreen.ini, options, timer
+	IniRead, debug, WMCfitscreen.ini, options, debug
 	IniRead, minimize, WMCfitscreen.ini, options, minimize
 	IniRead, hotkeyf2, WMCfitscreen.ini, options, hotkeyf2
 	IniRead, hotkeyf3, WMCfitscreen.ini, options, hotkeyf3
@@ -76,8 +78,8 @@
 ;;--- Menu Tray options ---
 
 	Menu, Tray, NoStandard
-	Menu, tray, add, --= WMC FitScreen =--, about
-	Menu, Tray, Icon, --= WMC FitScreen =--, %logoicon%
+	Menu, tray, add, ---=== %title% ===---, about
+	Menu, Tray, Icon, ---=== %title% ===---, %logoicon%
 	Menu, tray, add, Show logo, GuiLogo
 	Menu, tray, add, Secret MsgBox, secret					; Secret MsgBox, just show all options and variables of the program
 	Menu, Tray, Icon, Secret MsgBox, ico_lock.ico
@@ -87,40 +89,37 @@
 	menu, tray, disable, Author %author%
 	Menu, tray, add, %version%, about
 	menu, tray, disable, %version%
-	menu, tray, add
-	Menu, tray, add, Exit FitScreen, ExitApp				; GuiClose exit program
-	Menu, Tray, Icon, Exit FitScreen, ico_shut.ico
-	Menu, tray, add, Refresh FitScreen, doReload				; Reload the script.
-	Menu, Tray, Icon, Refresh FitScreen, ico_reboot.ico
-	menu, tray, add
-	menu, tray, add, --= Options General =--, about
-	Menu, Tray, Icon, --= Options General =--, ico_options.ico
+	Menu, tray, add,
+	Menu, tray, add, --== Control %title% ==--, about
+	Menu, Tray, Icon, --== Control %title% ==--, ico_options.ico
+	Menu, tray, add, Exit %title%, ExitApp					; Close exit program
+	Menu, Tray, Icon, Exit %title%, ico_shut.ico
+	Menu, tray, add, Refresh (ini mod), doReload 				; Reload the script.
+	Menu, Tray, Icon, Refresh (ini mod), ico_reboot.ico
+	Menu, tray, add, Set Debug (Toggle), debug
+	Menu, Tray, Icon, Set Debug (Toggle), ico_debug.ico
+	Menu, tray, add, Pause all (Toggle), pause2
+	Menu, Tray, Icon, Pause all (Toggle), ico_pause.ico
+	Menu, tray, add,
+	menu, tray, add, --== Options General ==--, about
+	Menu, Tray, Icon, --== Options General ==--, ico_options.ico
 	Menu, tray, add, Autorun On/Off = %autorun%, autorunonoff		; autorun
 	Menu, Tray, Icon, Autorun On/Off = %autorun%, ico_options.ico
 	menu, tray, add, Start Timer = %timer% (If autorun=1), timerset
-	menu, tray, disable, Start Timer = %timer% (If autorun=1)
+	;menu, tray, disable, Start Timer = %timer% (If autorun=1)
+	Menu, Tray, Icon, Start Timer = %timer% (If autorun=1), ico_options.ico
 	Menu, tray, add, Minimize start = %minimize%, about
 	menu, tray, disable, Minimize start = %minimize%
 	Menu, tray, add, Open WMCfitscreen.ini, openini
 	Menu, Tray, Icon, Open WMCfitscreen.ini, ico_options.ico
 	menu, tray, add
-	menu, tray, add, --= Options Monitor Select =--, about
-	Menu, Tray, Icon, --= Options Monitor Select =--, ico_monitor.ico
+	menu, tray, add, --== Options Monitor Select ==--, about
+	Menu, Tray, Icon, --== Options Monitor Select ==--, ico_monitor.ico
 	menu, Tray, add, Screen Choice && Gotomon = %gotomon%, screenselecttray
 	Menu, Tray, Icon, Screen Choice && Gotomon = %gotomon%, ico_monitor.ico
 	menu, tray, add
-	menu, tray, add, --= Keyboard Hotkeys =--, about
-	Menu, Tray, Icon, --= Keyboard Hotkeys =--, ico_HotKeys.ico
-	Menu, Tray, Add, Hotkey: F2 Monitor 1 (If exist), ButtonScreen_1
-	Menu, Tray, Icon, Hotkey: F2 Monitor 1 (If exist), ico_1.ico
-	Menu, Tray, Add, Hotkey: F3 Monitor 2 (If exist), ButtonScreen_2
-	Menu, Tray, Icon, Hotkey: F3 Monitor 2 (If exist), ico_2.ico
-	Menu, Tray, Add, Hotkey: F4 Monitor 3 (If exist), ButtonScreen_3
-	Menu, Tray, Icon, Hotkey: F4 Monitor 3 (If exist), ico_3.ico
-	Menu, tray, Add, Hotkey: F5 Minimize, minimize
-	Menu, tray, Icon, Hotkey: F5 Minimize, ico_minimize.ico
-	Menu, tray, add, Keyboard Hotkey need activation (ini), about
-	menu, tray, disable, Keyboard Hotkey need activation (ini)
+	menu, tray, add, --== Keyboard Hotkeys ==--, about
+	Menu, Tray, Icon, --== Keyboard Hotkeys ==--, ico_HotKeys.ico
 	Menu, threetree, Add, Pause (Toggle) Hotkey's = 0ff, pause
 	Menu, threetree, Icon, Pause (Toggle) Hotkey's = 0ff, ico_HotKeys.ico
 	menu, threetree, add
@@ -132,8 +131,18 @@
 	Menu, threetree, Icon, Hotkey: F9 - Volume Up, ico_HotKeys.ico
 	Menu, threetree, Add, Hotkey: F10 - Volume Down, about
 	Menu, threetree, Icon, Hotkey: F10 - Volume Down, ico_HotKeys.ico
-	menu, tray, add, --= Hotkeys =--, :threetree
-	Menu, Tray, Icon, --= Hotkeys =--, ico_HotKeys.ico
+	menu, tray, add, --== Hotkeys ==--, :threetree
+	Menu, Tray, Icon, --== Hotkeys ==--, ico_HotKeys.ico
+	Menu, Tray, Add, Hotkey: F2 Monitor 1 (If exist), ButtonScreen_1
+	Menu, Tray, Icon, Hotkey: F2 Monitor 1 (If exist), ico_1.ico
+	Menu, Tray, Add, Hotkey: F3 Monitor 2 (If exist), ButtonScreen_2
+	Menu, Tray, Icon, Hotkey: F3 Monitor 2 (If exist), ico_2.ico
+	Menu, Tray, Add, Hotkey: F4 Monitor 3 (If exist), ButtonScreen_3
+	Menu, Tray, Icon, Hotkey: F4 Monitor 3 (If exist), ico_3.ico
+	Menu, tray, Add, Hotkey: F5 Minimize, minimize
+	Menu, tray, Icon, Hotkey: F5 Minimize, ico_minimize.ico
+	Menu, tray, add, Keyboard Hotkey need activation (ini), about
+	menu, tray, disable, Keyboard Hotkey need activation (ini)
 	menu, tray, add
 	Menu, fourtree, add, WMC Exit / Close, wmcclose				; Close or Exit WMC, useful when in nochrome mode
 	Menu, fourtree, Icon, WMC Exit / Close, ico_shut.ico
@@ -143,10 +152,10 @@
 	Menu, fourtree, Icon, WMC minimize, ico_minimize.ico
 	Menu, fourtree, add, WMC Maximize, Maximize				; Maximize
 	Menu, fourtree, Icon, WMC Maximize, ico_Maximize.ico
-	menu, tray, add, --= Control =--,  :fourTree
-	Menu, Tray, Icon, --= Control =--, ico_HotKeys.ico
+	menu, tray, add, -= Control WMC =-,  :fourTree
+	Menu, Tray, Icon, -= Control WMC =-, ico_HotKeys.ico
 	menu, tray, add
-	menu, tray, add,
+	menu, tray, add, --== Start Options ==--, about
 	Menu, tray, add, Start / Move / minimize, SimpleStartmin		; Run the script.
 	Menu, Tray, Icon, Start / Move / minimize, ico_wmc.ico
 	Menu, tray, add, Start / Move, SimpleStartmove				; Run the script.
@@ -173,7 +182,9 @@
 	Goto, run
 
 run:
+	Ifequal, pause, 1, goto, pause3
 	Menu, Tray, Icon, ico_green.ico
+	IfEqual, debug, 1, MsgBox, Run : in waiting to press F6	
 	IfEqual, pausekey, 1, Menu, Tray, Icon, ico_green_pause.ico
 	KeyWait, F6, D
 	Menu, Tray, Icon, ico_red.ico
@@ -222,6 +233,7 @@ start:
 
 move:
 	Menu, Tray, Icon, ico_yellow.ico
+	IfEqual, debug, 1, MsgBox, Move : It will move WMC
 	WinActivate, Windows Media Center
 	Sleep, 500
 	IniRead, gotomon, WMCfitscreen.ini, options, gotomon
@@ -527,7 +539,7 @@ timerset:
 	;msgbox, old=%oldtimer%000 ... new=%newtimer%000
 	IfGreater, newtimer, 240, Goto, Timerset
 	IfLess, newtimer, 0, Goto, Timerset
-	Menu, Tray, Rename, Start Timer = %oldtimer%, Start Timer = %newtimer%
+	Menu, Tray, Rename, Start Timer = %oldtimer% (If autorun=1), Start Timer = %newtimer% (If autorun=1)
 	sleep, 500
 	goto, run
 
@@ -554,7 +566,34 @@ error_01:
 	MsgBox, ERROR_%error% WMC not installed (Install WMC). An error occur. Program close...
 	goto, ExitApp
 
-;;--- Quit (escape , esc) ---
+;;--- Quit (escape , esc) debug & pause ---
+
+debug:
+	IfEqual, debug, 0, goto, debug1
+	IfEqual, debug, 1, goto, debug0
+	debug0:
+	;Menu, Tray, Rename, Debug MsgBox = 1, Debug MsgBox = 0
+	SetEnv, debug, 0
+	goto, run
+	debug1:
+	;Menu, Tray, Rename, Debug MsgBox = 0, Debug MsgBox = 1
+	SetEnv, debug, 1
+	goto, run
+
+pause2:
+	IfEqual, debug, 1, MsgBox, pause2 :
+	Ifequal, pause, 0, goto, paused
+	Ifequal, pause, 1, goto, unpaused
+	paused:
+	Menu, Tray, Icon, ico_green_pause.ico
+	SetEnv, pause, 1
+	goto, pause3
+	unpaused:
+	SetEnv, pause, 0
+	Goto, run
+	pause3:
+	sleep, 120000
+	goto, pause3
 
 doReload:
 	Menu, Tray, Icon, ico_yellow.ico
@@ -568,7 +607,12 @@ ExitApp:
 	Process, Close, wmc_minimize.exe
 	ExitApp
 
-;Escape::		; Debug purpose
+Escape::					; Debug purpose
+	IfEqual, debug, 0, goto, run
+	Process, Close, wmc_monitor1.exe
+	Process, Close, wmc_monitor2.exe
+	Process, Close, wmc_monitor3.exe
+	Process, Close, wmc_minimize.exe
 	ExitApp
 
 GuiClose:
