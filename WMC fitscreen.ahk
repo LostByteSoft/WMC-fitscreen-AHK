@@ -12,10 +12,9 @@
 ;;	Windows 7 maybe intermix monitor numbers ; ex: the 2 is primary and 1 is extended. This software not supposed to have unexpected random errors with that.
 ;;	2017-05-05 3 screen supported
 ;;	2017-09-08-1759 bug track and modifications
+;;	2017-10-20-0842 - look if have at least 1 monitor connected, if not minimize, used in case want music but not powered monitor.
 
 ;;--- Softwares Variables ---
-
-	Menu, Tray, Icon, ico_yellow.ico
 
 	SetWorkingDir, %A_ScriptDir%
 	#SingleInstance Force
@@ -26,7 +25,7 @@
 
 	SetEnv, title, WMC FitScreen
 	SetEnv, mode, WMC Best Fit Screen : F6
-	SetEnv, version, Version 2017-10-15-1113
+	SetEnv, version, Version 2017-10-29-0801
 	SetEnv, Author, LostByteSoft
 	SetEnv, logoicon, ico_green.ico
 
@@ -35,32 +34,36 @@
 	SysGet, Mon1, Monitor, 1
 	SysGet, Mon2, Monitor, 2
 	SysGet, Mon3, Monitor, 3
+	SysGet, Mon10, MonitorWorkArea
+
+	;; MsgBox, Mon 1 Left: %Mon10Left% -- Top: %Mon10Top% -- Right: %Mon10Right% -- Bottom %Mon10Bottom%
 
 ;;--- Softwares options ---
 
 	FileInstall, WMCfitscreen.ini, WMCfitscreen.ini, 0
-	FileInstall, icons\ico_green.ico, ico_green.ico, 0
-	FileInstall, icons\ico_yellow.ico, ico_yellow.ico, 0
-	FileInstall, icons\ico_red.ico, ico_red.ico, 0
-	FileInstall, icons\ico_reboot.ico, ico_reboot.ico, 0
-	FileInstall, icons\ico_shut.ico, ico_shut.ico, 0
-	FileInstall, icons\ico_wmc.ico, ico_wmc.ico, 0
-	FileInstall, icons\ico_lock.ico, ico_lock.ico, 0
-	FileInstall, icons\ico_about.ico, ico_about.ico, 0
-	FileInstall, icons\ico_full.ico, ico_full.ico, 0
-	FileInstall, icons\ico_monitor.ico, ico_monitor.ico, 0
-	FileInstall, icons\ico_minimize.ico, ico_minimize.ico, 0
-	FileInstall, icons\ico_maximize.ico, ico_maximize.ico, 0
-	FileInstall, icons\ico_mute.ico, ico_mute.ico, 0
-	FileInstall, icons\ico_1.ico, ico_1.ico, 0
-	FileInstall, icons\ico_2.ico, ico_2.ico, 0
-	FileInstall, icons\ico_3.ico, ico_3.ico, 0
-	FileInstall, icons\ico_volume_2.ico, ico_volume_2.ico, 0
-	FileInstall, icons\ico_options.ico, ico_options.ico, 0
-	FileInstall, icons\ico_HotKeys.ico, ico_HotKeys.ico, 0
-	FileInstall, icons\ico_pause.ico, ico_pause.ico, 0
-	FileInstall, icons\ico_green_pause.ico, ico_green_pause.ico, 0
-	FileInstall, icons\ico_debug.ico, ico_debug.ico, 0
+	FileInstall, etc\ico_green.ico, ico_green.ico, 0
+	FileInstall, etc\ico_yellow.ico, ico_yellow.ico, 0
+	FileInstall, etc\ico_red.ico, ico_red.ico, 0
+	FileInstall, etc\ico_reboot.ico, ico_reboot.ico, 0
+	FileInstall, etc\ico_shut.ico, ico_shut.ico, 0
+	FileInstall, etc\ico_wmc.ico, ico_wmc.ico, 0
+	FileInstall, etc\ico_lock.ico, ico_lock.ico, 0
+	FileInstall, etc\ico_about.ico, ico_about.ico, 0
+	FileInstall, etc\ico_full.ico, ico_full.ico, 0
+	FileInstall, etc\ico_monitor.ico, ico_monitor.ico, 0
+	FileInstall, etc\ico_minimize.ico, ico_minimize.ico, 0
+	FileInstall, etc\ico_maximize.ico, ico_maximize.ico, 0
+	FileInstall, etc\ico_mute.ico, ico_mute.ico, 0
+	FileInstall, etc\ico_1.ico, ico_1.ico, 0
+	FileInstall, etc\ico_2.ico, ico_2.ico, 0
+	FileInstall, etc\ico_3.ico, ico_3.ico, 0
+	FileInstall, etc\ico_volume_2.ico, ico_volume_2.ico, 0
+	FileInstall, etc\ico_options.ico, ico_options.ico, 0
+	FileInstall, etc\ico_HotKeys.ico, ico_HotKeys.ico, 0
+	FileInstall, etc\ico_pause.ico, ico_pause.ico, 0
+	FileInstall, etc\ico_green_pause.ico, ico_green_pause.ico, 0
+	FileInstall, etc\ico_debug.ico, ico_debug.ico, 0
+	FileInstall, etc\ico_yellow.ico, ico_yellow.ico, 0
 
 	IniRead, start, WMCfitscreen.ini, options, start
 	IniRead, autorun, WMCfitscreen.ini, options, autorun
@@ -101,12 +104,11 @@
 	Menu, tray, add, Pause all (Toggle), pause2
 	Menu, Tray, Icon, Pause all (Toggle), ico_pause.ico
 	Menu, tray, add,
-	menu, tray, add, --== Options General ==--, about
-	Menu, Tray, Icon, --== Options General ==--, ico_options.ico
+	menu, tray, add, --== Options ==--, about
+	Menu, Tray, Icon, --== Options ==--, ico_options.ico
 	Menu, tray, add, Autorun On/Off = %autorun%, autorunonoff		; autorun
 	Menu, Tray, Icon, Autorun On/Off = %autorun%, ico_options.ico
 	menu, tray, add, Start Timer = %timer% (If autorun=1), timerset
-	;menu, tray, disable, Start Timer = %timer% (If autorun=1)
 	Menu, Tray, Icon, Start Timer = %timer% (If autorun=1), ico_options.ico
 	Menu, tray, add, Minimize start = %minimize%, about
 	menu, tray, disable, Minimize start = %minimize%
@@ -152,9 +154,8 @@
 	Menu, fourtree, Icon, WMC minimize, ico_minimize.ico
 	Menu, fourtree, add, WMC Maximize, Maximize				; Maximize
 	Menu, fourtree, Icon, WMC Maximize, ico_Maximize.ico
-	menu, tray, add, -= Control WMC =-,  :fourTree
-	Menu, Tray, Icon, -= Control WMC =-, ico_HotKeys.ico
-	menu, tray, add
+	menu, tray, add, --= Control WMC =--,  :fourTree
+	Menu, Tray, Icon, --= Control WMC =--, ico_HotKeys.ico
 	menu, tray, add, --== Start Options ==--, about
 	Menu, tray, add, Start / Move / minimize, SimpleStartmin		; Run the script.
 	Menu, Tray, Icon, Start / Move / minimize, ico_wmc.ico
@@ -167,9 +168,11 @@
 
 ;;--- Software start here ---
 
+	Menu, Tray, Icon, ico_yellow.ico
+
 	IfNotExist, WMCfitscreen.ini, FileInstall, WMCfitscreen.ini, WMCfitscreen.ini, 0
 	IfNotExist, %windir%\ehome\ehshell.exe, Goto, error_01
-	IfEqual, hotkeyf2, 1, Run, "wmc_monitor1.exe"
+	IfEqual, hotkeyf2, 1, Run, "wmc_monitor1.exe"		; no dll file because icon do not appear
 	IfEqual, hotkeyf3, 1, Run, "wmc_monitor2.exe"
 	IfEqual, hotkeyf4, 1, Run, "wmc_monitor3.exe"
 	IfEqual, hotkeyf5, 1, Run, "wmc_minimize.exe"
@@ -182,9 +185,9 @@
 	Goto, run
 
 run:
+	IfEqual, debug, 1, MsgBox, Run : in waiting to press F6. ESCAPE quit in debug mode.
 	Ifequal, pause, 1, goto, pause3
 	Menu, Tray, Icon, ico_green.ico
-	IfEqual, debug, 1, MsgBox, Run : in waiting to press F6	
 	IfEqual, pausekey, 1, Menu, Tray, Icon, ico_green_pause.ico
 	KeyWait, F6, D
 	Menu, Tray, Icon, ico_red.ico
@@ -212,7 +215,9 @@ start:
 	goto, move
 
 	SimpleStartmove:
+		Menu, Tray, Icon, ico_yellow.ico
 		SetEnv, start, /widescreen /nostartupanimation
+		SetEnv, minimize, 0
 		goto, start
 
 	maxstart:
@@ -221,10 +226,12 @@ start:
 		goto, move
 
 	F6startmoveoptions:
+		Menu, Tray, Icon, ico_yellow.ico
 		IniRead, start, WMCfitscreen.ini, options, start
 		goto, start
 
 	SimpleStartmin:
+		Menu, Tray, Icon, ico_yellow.ico
 		SetEnv, start, /widescreen /nostartupanimation
 		SetEnv, minimize, 1
 		goto, start
@@ -233,6 +240,11 @@ start:
 
 move:
 	Menu, Tray, Icon, ico_yellow.ico
+	SysGet, MonitorCount, MonitorCount
+	SysGet, MonitorPrimary, MonitorPrimary
+	SysGet, Mon1, Monitor, 1
+	SysGet, Mon2, Monitor, 2
+	SysGet, Mon3, Monitor, 3
 	IfEqual, debug, 1, MsgBox, Move : It will move WMC
 	WinActivate, Windows Media Center
 	Sleep, 500
@@ -365,9 +377,11 @@ move:
 	IfEqual, gotomon ,2 , Goto, mon2-1080
 	IfEqual, gotomon ,3 , Goto, mon3-1080
 
-	WinMove, Windows Media Center, , 52, 0 , 1800
+	;; MsgBox, Mon 1 Left: %Mon10Left% -- Top: %Mon10Top% -- Right: %Mon10Right% -- Bottom %Mon10Bottom%
+
+	WinMove, Windows Media Center, , 52, 0 , %Mon10Bottom%
 	sleep, 500
-	WinMove, Windows Media Center, , 52, 0 , 1800
+	WinMove, Windows Media Center, , 52, 0 , %Mon10Bottom%
 	WinActivate, Windows Media Center
 	IfEqual, minimize, 1, goto, minimize
 	Menu, Tray, Icon, ico_green.ico
@@ -607,13 +621,9 @@ ExitApp:
 	Process, Close, wmc_minimize.exe
 	ExitApp
 
-Escape::					; Debug purpose
-	IfEqual, debug, 0, goto, run
-	Process, Close, wmc_monitor1.exe
-	Process, Close, wmc_monitor2.exe
-	Process, Close, wmc_monitor3.exe
-	Process, Close, wmc_minimize.exe
-	ExitApp
+;; ESCAPE::					; Debug purpose, this could not be activated permanently (Causes bugs).
+	MsgBox, Quit %title% %mode%.
+	Goto, ExitApp
 
 GuiClose:
 	Gui, destroy
@@ -703,7 +713,7 @@ fullscreen:
 	Return
 
 author:
-	MsgBox, 64, %title%, %title% %mode% %version% %author% This software is usefull to place automaticly WMC for best fit. 1 2 or 3 monitors supported.`n`n`tGo to https://github.com/LostByteSoft
+	MsgBox, 64, %title%, %title% %mode% %version% %author% This software is usefull to place automaticly WMC for best fit. 1 2 or 3 monitors supported. Alt+Q quit in debug mode.`n`n`tGo to https://github.com/LostByteSoft
 	Return
 
 GuiLogo:
