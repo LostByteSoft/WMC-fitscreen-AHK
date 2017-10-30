@@ -25,18 +25,16 @@
 
 	SetEnv, title, WMC FitScreen
 	SetEnv, mode, WMC Best Fit Screen : F6
-	SetEnv, version, Version 2017-10-29-0801
+	SetEnv, version, Version 2017-10-30-1850
 	SetEnv, Author, LostByteSoft
 	SetEnv, logoicon, ico_green.ico
+	SetEnv, Ext, exe			;; 2017-10-30-1850 return to exe
 
 	SysGet, MonitorCount, MonitorCount
 	SysGet, MonitorPrimary, MonitorPrimary
 	SysGet, Mon1, Monitor, 1
 	SysGet, Mon2, Monitor, 2
 	SysGet, Mon3, Monitor, 3
-	SysGet, Mon10, MonitorWorkArea
-
-	;; MsgBox, Mon 1 Left: %Mon10Left% -- Top: %Mon10Top% -- Right: %Mon10Right% -- Bottom %Mon10Bottom%
 
 ;;--- Softwares options ---
 
@@ -169,23 +167,22 @@
 ;;--- Software start here ---
 
 	Menu, Tray, Icon, ico_yellow.ico
-
-	IfNotExist, WMCfitscreen.ini, FileInstall, WMCfitscreen.ini, WMCfitscreen.ini, 0
+	IfEqual, debug, 1, MsgBox, Mon 1 Left: %Mon10Left% -- Top: %Mon10Top% -- Right: %Mon10Right% -- Bottom %Mon10Bottom%
 	IfNotExist, %windir%\ehome\ehshell.exe, Goto, error_01
-	IfEqual, hotkeyf2, 1, Run, "wmc_monitor1.exe"		; no dll file because icon do not appear
-	IfEqual, hotkeyf3, 1, Run, "wmc_monitor2.exe"
-	IfEqual, hotkeyf4, 1, Run, "wmc_monitor3.exe"
-	IfEqual, hotkeyf5, 1, Run, "wmc_minimize.exe"
+	IfEqual, hotkeyf2, 1, Run, "wmc_monitor1.%ext%"			;;	for dll use need tray bar icon
+	IfEqual, hotkeyf3, 1, Run, "wmc_monitor2.%ext%"			;;	Menu, Tray, Icon, ico_2.ico
+	IfEqual, hotkeyf4, 1, Run, "wmc_monitor3.%ext%"
+	IfEqual, hotkeyf5, 1, Run, "wmc_minimize.%ext%"
 	IfEqual, pausekey, 1, Menu, Tray, Icon, ico_green_pause.ico
 	IfEqual, pausekey, 1, Menu, threetree, rename, Pause (Toggle) Hotkey's = 0ff, Pause (Toggle) Hotkey's = On
 	IfEqual, pausekey, 1, Menu, threetree, Icon, Pause (Toggle) Hotkey's = On, ico_pause.ico
 	IfWinExist, Windows Media Center,, goto, maxstart
-	IniRead, start, WMCfitscreen.ini, options, start
+	;; IniRead, start, WMCfitscreen.ini, options, start
 	IfEqual, Autorun, 1, Goto, Start
 	Goto, run
 
 run:
-	IfEqual, debug, 1, MsgBox, Run : in waiting to press F6. ESCAPE quit in debug mode.
+	IfEqual, debug, 1, MsgBox, Run : in waiting to press F6.
 	Ifequal, pause, 1, goto, pause3
 	Menu, Tray, Icon, ico_green.ico
 	IfEqual, pausekey, 1, Menu, Tray, Icon, ico_green_pause.ico
@@ -200,7 +197,7 @@ run:
 start:
 	Menu, Tray, Icon, ico_yellow.ico
 	IfWinExist, Windows Media Center,, goto, move
-	;; MsgBox, t_UpTime=%t_UpTime% timer=%timer% sleep time=%timer%000
+	IfEqual, debug, 1, MsgBox, t_UpTime=%t_UpTime% timer=%timer% sleep time=%timer%000
 	t_UpTime := A_TickCount // 1000			; Elapsed seconds since start if uptime upper %delay% sec start imediately.
 	IfGreater, t_UpTime, %delay%, goto, skip	; Elapsed seconds since start if uptime upper %delay% sec start imediately.
 	sleep, %delay%000
@@ -376,12 +373,9 @@ move:
 1080:
 	IfEqual, gotomon ,2 , Goto, mon2-1080
 	IfEqual, gotomon ,3 , Goto, mon3-1080
-
-	;; MsgBox, Mon 1 Left: %Mon10Left% -- Top: %Mon10Top% -- Right: %Mon10Right% -- Bottom %Mon10Bottom%
-
-	WinMove, Windows Media Center, , 52, 0 , %Mon10Bottom%
+	WinMove, Windows Media Center, , 52, 0 , 1799
 	sleep, 500
-	WinMove, Windows Media Center, , 52, 0 , %Mon10Bottom%
+	WinMove, Windows Media Center, , 52, 0 , 1799
 	WinActivate, Windows Media Center
 	IfEqual, minimize, 1, goto, minimize
 	Menu, Tray, Icon, ico_green.ico
@@ -615,10 +609,10 @@ doReload:
 	sleep, 500
 
 ExitApp:
-	Process, Close, wmc_monitor1.exe
-	Process, Close, wmc_monitor2.exe
-	Process, Close, wmc_monitor3.exe
-	Process, Close, wmc_minimize.exe
+	Process, Close, wmc_monitor1.%ext%
+	Process, Close, wmc_monitor2.%ext%
+	Process, Close, wmc_monitor3.%ext%
+	Process, Close, wmc_minimize.%ext%
 	ExitApp
 
 ;; ESCAPE::					; Debug purpose, this could not be activated permanently (Causes bugs).
