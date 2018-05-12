@@ -16,6 +16,6 @@ Juste put all the files in the same directory.
  
 2017-10-09-1936 Put WMC full screen in one screen and do not grab the mouse. (I made it on 2018-05-12-0026) Active option overscan on screen 2.
 
-*Screen shot
+* Screen shot (menu tray)
 
 ![Screenshot](Picture_1.jpg)
