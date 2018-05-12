@@ -10,12 +10,13 @@
 
 	SetEnv, title, WMC F5 Minimize
 	SetEnv, mode, Hotkey : F5 minimize only if activated
-	SetEnv, version, Version 2017-10-09-1911
+	SetEnv, version, Version 2017-11-06-1533
 	SetEnv, Author, LostByteSoft
+	SetEnv, icofolder, C:\Program Files\Common Files
 
-	FileInstall, icons\ico_shut.ico, ico_shut.ico, 0
-	FileInstall, icons\ico_minimize.ico, ico_minimize.ico, 0
-	FileInstall, icons\ico_minimize_pause.ico, ico_minimize_pause.ico, 0
+	FileInstall, ico_shut.ico, %icofolder%\ico_shut.ico, 0
+	FileInstall, ico_minimize.ico, %icofolder%\ico_minimize.ico, 0
+	FileInstall, ico_minimize_pause.ico, %icofolder%\ico_minimize_pause.ico, 0
 
 	SetWorkingDir, %A_ScriptDir%
 	#SingleInstance Force
@@ -27,19 +28,19 @@
 
 	Menu, Tray, NoStandard
 	Menu, tray, add, Exit, ExitApp
-	Menu, Tray, Icon, Exit, ico_shut.ico
+	Menu, Tray, Icon, Exit, %icofolder%\ico_shut.ico
 	Menu, tray, add, Deactivate HotKey, Deactivate
-	Menu, Tray, Icon, Deactivate HotKey, ico_minimize.ico
+	Menu, Tray, Icon, Deactivate HotKey, %icofolder%\ico_minimize.ico
 	Menu, tray, add, Hotkey: F5 MiniMize, minimize
-	Menu, Tray, Icon, Hotkey: F5 MiniMize, ico_HotKeys.ico
+	Menu, Tray, Icon, Hotkey: F5 MiniMize, %icofolder%\ico_HotKeys.ico
 	Menu, Tray, Tip, %title%
 
 ;;--- Software start here ---
 
 start:
-	Menu, Tray, Icon, ico_minimize.ico
+	Menu, Tray, Icon, %icofolder%\ico_minimize.ico
 	KeyWait, F5, D
-	IniRead, pausekey, WMC fitscreen.ini, options, pausekey
+	IniRead, pausekey, WMCfitscreen.ini, options, pausekey
 	IfEqual, pausekey, 1, Goto, paused
 
 minimize:
@@ -48,11 +49,11 @@ minimize:
 	goto, start
 
 Deactivate:
-	IniWrite, 0, WMC fitscreen.ini, options, hotkeyf5
+	IniWrite, 0, WMCfitscreen.ini, options, hotkeyf5
 	Goto, ExitApp
 
 paused:
-	;IfEqual, pausekey, 1, Menu, Tray, Icon, ico_minimize_pause.ico
+	;IfEqual, pausekey, 1, Menu, Tray, Icon, %icofolder%\ico_minimize_pause.ico
 	sleep, 5000
 	Goto, Start
 
