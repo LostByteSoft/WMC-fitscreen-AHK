@@ -11,5 +11,7 @@ Windows 7 maybe intermix monitor numbers ; ex: the 2 is primary and 1 is extende
 This software not supposed to have unexpected random errors with that.
 
 --- To do list ---
+ 
+2017-10-09-1936 Put WMC full screen in one screen and do not grab the mouse. (I made it on 2018-05-12-0026) Active option overscan on screen 2.
 
-2017-10-09-1936 Put WMC full screen in one screen and do not grab the mouse.
+![Screenshot](Picture_1.jpg)
